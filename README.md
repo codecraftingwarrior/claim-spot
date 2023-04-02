@@ -34,4 +34,4 @@ To use the application, open your web browser and navigate to http://localhost:4
 
 ## Documentation
 
-The documentation for the API endpoints is available at /swagger-ui.html when running the backend server. You can also generate a static version of the documentation with the mvn spring-boot:run command.
+The documentation for the API endpoints is available at `/swagger-ui.html` when running the backend server. You can also generate a static version of the documentation with the mvn spring-boot:run command.
