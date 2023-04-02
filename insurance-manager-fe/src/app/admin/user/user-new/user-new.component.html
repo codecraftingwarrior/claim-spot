@@ -1,0 +1,122 @@
+<div class="container w-100">
+    <form role="form" #userForm="ngForm" autocomplete="off">
+        <ngx-spinner type="ball-clip-rotate-pulse" [fullScreen]="false"></ngx-spinner>
+        <div class="row">
+            <div class="form-group col-sm-4">
+                <label for="prenom">Prenom</label>
+                <nz-form-control [nzValidateStatus]="prenom.invalid ? 'error' : 'success'"
+                    nzErrorTip="* Champ obligatoire">
+                    <input id="prenom" nz-input placeholder="Prenom" [(ngModel)]="user.prenom" [required]="true"
+                        name="code" #prenom="ngModel" />
+                </nz-form-control>
+            </div>
+
+            <div class="form-group col-sm-4">
+                <label for="nom">Nom</label>
+                <nz-form-control [nzValidateStatus]="nom.invalid ? 'error' : 'success'"
+                    nzErrorTip="* Champ obligatoire">
+                    <input id="nom" nz-input placeholder="Nom" [(ngModel)]="user.nom" [required]="true" name="nom"
+                        #nom="ngModel" />
+                </nz-form-control>
+            </div>
+
+            <div class="form-group col-sm-4">
+                <label for="username">E-mail</label>
+                <nz-form-control [nzValidateStatus]="username.invalid ? 'error' : 'success'"
+                    nzErrorTip="* Champ obligatoire">
+                    <input id="username" nz-input placeholder="E-mail" [(ngModel)]="user.username" [required]="true" name="username"
+                        #username="ngModel" />
+                </nz-form-control>
+            </div>
+
+            <div class="form-group col-sm-6">
+                <label for="telephone">Téléphone</label>
+                <nz-form-control [nzValidateStatus]="telephone.invalid ? 'error' : 'success'"
+                    nzErrorTip="* Champ obligatoire">
+                    <input id="telephone" nz-input [mask]="' (00) 000 00 00'" placeholder="Télephone" [(ngModel)]="user.telephone"
+                        [required]="true" name="telephone" #telephone="ngModel" />
+                </nz-form-control>
+            </div>
+
+            <div class="form-group col-sm-6">
+                <label for="adresse">Adresse</label>
+                <nz-form-control [nzValidateStatus]="adresse.invalid ? 'error' : 'success'"
+                    nzErrorTip="* Champ obligatoire">
+                    <input id="adresse" nz-input placeholder="Adresse" [(ngModel)]="user.adresse" [required]="true"
+                        name="adresse" #adresse="ngModel" />
+                </nz-form-control>
+            </div>
+
+            <div class="form-group col-sm-6">
+                <label>Genre</label><br>
+                <nz-radio-group name="genre" nzButtonStyle="solid" [(ngModel)]="user.genre">
+                    <label nz-radio-button nzValue="Homme">
+                        <i class="fa fa-male" aria-hidden="true"></i>
+                        Homme
+                    </label>
+                    <label nz-radio-button nzValue="Femme">
+                        <i class="fa fa-female" aria-hidden="true"></i>
+                        Femme
+                    </label>
+                </nz-radio-group>
+            </div>
+
+            <div class="form-group col-sm-6">
+                <label for="fonction">Fonction</label>
+                <nz-form-control [nzValidateStatus]="fonction.invalid ? 'error' : 'success'"
+                    nzErrorTip="* Champ obligatoire">
+                    <input id="fonction" nz-input placeholder="Fonction" [(ngModel)]="user.fonction" [required]="true"
+                        name="fonction" #fonction="ngModel" />
+                </nz-form-control>
+            </div>
+
+            <div class="form-group col-sm-6">
+                <label class="form-control-label" for="adresse">Role</label>
+                <nz-form-control [nzValidateStatus]="role.invalid ? 'error' : 'success'"
+                    nzErrorTip="* Champ obligatoire">
+                    <ng-select name="role" required [items]="roles" bindLabel="nom"
+                        placeholder="Selectionner un ou plusieurs role" #role="ngModel" appendTo="body" multiple="true"
+                        [searchable]="true" [(ngModel)]="selectedRoles">
+                    </ng-select>
+                </nz-form-control>
+            </div>
+
+            <div class="form-group col-sm-6">
+                <label class="form-control-label" for="adresse">Formule</label>
+                <nz-form-control [nzValidateStatus]="formule.invalid ? 'error' : 'success'"
+                    nzErrorTip="* Champ obligatoire">
+                    <ng-select name="formule" [items]="formules" bindLabel="libelle"
+                        placeholder="Selectionner une formule" #formule="ngModel" appendTo="body" [multiple]="false"
+                        [searchable]="true" [(ngModel)]="selectedFormule">
+                    </ng-select>
+                </nz-form-control>
+            </div>
+
+            <div class="form-group col-sm-6">
+                <label for="password">Mot de passe</label>
+                <nz-form-control [nzValidateStatus]="password.invalid ? 'error' : 'success'"
+                    nzErrorTip="* Champ obligatoire">
+                    <input id="password" type="password" nz-input placeholder="Mot de passe" [(ngModel)]="plainPassword" [required]="true"
+                        name="password" #password="ngModel" />
+                </nz-form-control>
+            </div>
+
+            <div class="form-group col-sm-6">
+                <label for="passwordConfirm">Confirmer le mot de passe</label>
+                <nz-form-control [nzValidateStatus]="plainPasswordConfirm.invalid ? 'error' : 'success'"
+                    nzErrorTip="* Champ obligatoire">
+                    <input id="passwordConfirm" type="password" nz-input placeholder="Confirmer le mot de passe" [(ngModel)]="passwordConfirm" [required]="true"
+                        name="passwordConfirm" #plainPasswordConfirm="ngModel" />
+                </nz-form-control>
+            </div>
+            <div class="form-group col-sm-12 col-lg-12 col-md-12 d-flex justify-content-end">
+                <button class="btn btn-primary" [disabled]="userForm.invalid" (click)="create()">
+                    Valider
+                    <i class="fa fa-check-circle" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+
+       
+    </form>
+</div>

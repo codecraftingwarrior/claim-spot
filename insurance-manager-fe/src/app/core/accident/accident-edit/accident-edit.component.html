@@ -1,0 +1,223 @@
+<div class="container-fluid w-100">
+    <form role="form" #accidentForm="ngForm" autocomplete="off">
+
+        <div class="stepper" *ngIf="current !== 3">
+            <nz-steps nzType="navigation" [nzCurrent]="current">
+                <nz-step nzTitle="Accident" nzDescription="Précisez les détails de l'accident"></nz-step>
+                <nz-step nzTitle="Adversaire" nzDescription="Précisez les détails sur votre adversaire"></nz-step>
+            </nz-steps>
+            <div class="steps-content m-1">
+                <div class="card bg-light shadow">
+                    <div class="card-body">
+                        <ng-container [ngSwitch]="current">
+                            <div *ngSwitchCase="0" style="width: 100%;">
+                                <ngx-spinner type="ball-clip-rotate-pulse" [fullScreen]="false"></ngx-spinner>
+                                <div class="row">
+                                    <div class="form-group col-sm-4">
+                                        <label for="date">Date</label>
+                                        <nz-form-control [nzValidateStatus]="date.invalid ? 'error' : 'success'"
+                                            nzErrorTip="* Champ obligatoire">
+                                            <nz-date-picker [nzSize]="'large'" (ngModelChange)="checkDate($event)" [nzFormat]="'dd/MM/yyyy'"
+                                                style="width: 100%;" nz-input id="date" nz-input placeholder="Date"
+                                                [(ngModel)]="accident.date" [required]="true" name="date"
+                                                #date="ngModel">
+                                            </nz-date-picker>
+                                        </nz-form-control>
+                                    </div>
+
+                                    <div class="form-group col-sm-4">
+                                        <label for="heure">Heure</label>
+                                        <nz-form-control [nzValidateStatus]="heure.invalid ? 'error' : 'success'"
+                                            nzErrorTip="* Champ obligatoire">
+                                            <input placeholder="Selectionner l'heure" #heure="ngModel"
+                                                [(ngModel)]="accident.heure" nz-input [required]="true" name="time"
+                                                id="time" aria-label="24hr format" [ngxTimepicker]="fullTime"
+                                                [format]="24" readonly>
+                                            <ngx-material-timepicker #fullTime [enableKeyboardInput]="true"
+                                                [cancelBtnTmpl]="cancelBtn" [confirmBtnTmpl]="confirmBtn"
+                                                [editableHintTmpl]="dialHint">
+                                            </ngx-material-timepicker>
+
+                                            <ng-template #cancelBtn>
+                                                <button type="button" style="margin-right: 10px;"
+                                                    class="btn btn-sm btn-light">Annuler</button>
+                                            </ng-template>
+                                            <ng-template #confirmBtn>
+                                                <button type="button" class="btn btn-sm btn-info">Valider</button>
+                                            </ng-template>
+
+                                            <ng-template #dialHint>
+                                                <small>(vous pouvez utiliser les touches du clavier)</small>
+                                            </ng-template>
+
+                                        </nz-form-control>
+                                    </div>
+
+                                    <div class="form-group col-sm-4">
+                                        <label for="lieu">Lieu</label>
+                                        <nz-form-control [nzValidateStatus]="lieu.invalid ? 'error' : 'success'"
+                                            nzErrorTip="* Champ obligatoire">
+                                            <input id="lieu" nz-input placeholder="Lieu" [(ngModel)]="accident.lieu"
+                                                [required]="true" name="lieu" #lieu="ngModel" />
+                                        </nz-form-control>
+                                    </div>
+
+                                    <div class="form-group col-sm-4">
+                                        <label for="vehicule">Vehicule</label>
+                                        <nz-form-control [nzValidateStatus]="vehicule.invalid ? 'error' : 'success'"
+                                            nzErrorTip="* Champ obligatoire">
+                                            <ng-select name="vehicule" required nz-input
+                                                [notFoundText]="'Aucun vehicule detecté'" [closeOnSelect]="true"
+                                                placeholder="Chosissez le vehicule" #vehicule="ngModel" appendTo="body"
+                                                [multiple]="false" [searchable]="true" [(ngModel)]="selectedVehicule">
+                                                <ng-option *ngFor="let vehicule of vehicules" [value]="vehicule">
+                                                    <i [class]="vehicule?.categorie?.icon" aria-hidden="true"></i>&nbsp;
+                                                    {{ vehicule?.marque + ' ' + vehicule?.modele }}
+                                                </ng-option>
+                                            </ng-select>
+                                        </nz-form-control>
+                                    </div>
+
+                                    <div class="form-group col-sm-8">
+                                        <label for="details">Details</label>
+                                        <nz-form-control [nzValidateStatus]="details.invalid ? 'error' : 'success'"
+                                            nzErrorTip="* Champ obligatoire">
+                                            <ckeditor placeholder="Informations pertinentes relatives à l'accident"
+                                                nz-input [required]="true" id="details" name="description"
+                                                #details="ngModel" [(ngModel)]="accident.details" [editor]="editor">
+                                            </ckeditor>
+                                        </nz-form-control>
+                                    </div>
+
+                                </div>
+
+
+                            </div>
+
+                            <div *ngSwitchCase="1">
+                                <div class="row">
+                                    <div class="form-group col-sm-6">
+                                        <label for="prenom">Prenom</label>
+                                        <nz-form-control [nzValidateStatus]="prenom.invalid ? 'error' : 'success'"
+                                            nzErrorTip="* Champ obligatoire">
+                                            <input id="prenom" nz-input placeholder="Prenom"
+                                                [(ngModel)]="detailAdversaire.prenom" name="prenom" #prenom="ngModel" />
+                                        </nz-form-control>
+                                    </div>
+
+                                    <div class="form-group col-sm-6">
+                                        <label for="nom">Nom</label>
+                                        <nz-form-control [nzValidateStatus]="nom.invalid ? 'error' : 'success'"
+                                            nzErrorTip="* Champ obligatoire">
+                                            <input id="nom" nz-input placeholder="Nom"
+                                                [(ngModel)]="detailAdversaire.nom" name="nom" #nom="ngModel" />
+                                        </nz-form-control>
+                                    </div>
+
+                                    <div class="form-group col-sm-6">
+                                        <label for="genre">Genre</label>
+                                        <nz-form-control [nzValidateStatus]="genre.invalid ? 'error' : 'success'"
+                                            nzErrorTip="* Champ obligatoire">
+                                            <ng-select name="genre" required nz-input [closeOnSelect]="true"
+                                                placeholder="Genre" #genre="ngModel" appendTo="body" [multiple]="false"
+                                                [searchable]="true" [(ngModel)]="detailAdversaire.genre">
+                                                <ng-option *ngFor="let genre of genres" [value]="genre.value">
+                                                    <i [class]="genre.icon" aria-hidden="true"></i>&nbsp;
+                                                    {{ genre.value }}
+                                                </ng-option>
+                                            </ng-select>
+                                        </nz-form-control>
+                                    </div>
+
+                                    <div class="form-group col-sm-6">
+                                        <label for="prenom">Categorie Vehicule</label>
+                                        <nz-form-control [nzValidateStatus]="categorie.invalid ? 'error' : 'success'"
+                                            nzErrorTip="* Champ obligatoire">
+                                            <ng-select name="icon" required nz-input [closeOnSelect]="true"
+                                                placeholder="Chosissez la categorie de son vehicule"
+                                                #categorie="ngModel" appendTo="body" [multiple]="false"
+                                                [searchable]="true" [(ngModel)]="selectedCategorieVehicule">
+                                                <ng-option  [class.table-success]="categorie.id === accident.detailAdversaire.id" *ngFor="let categorie of categorieVehicules"
+                                                    [value]="categorie">
+                                                    <i [class]="categorie.icon" aria-hidden="true"></i>&nbsp;
+                                                    {{ categorie.libelle }}
+                                                </ng-option>
+                                            </ng-select>
+                                        </nz-form-control>
+                                    </div>
+
+                                    <div class="form-group col-sm-4">
+                                        <label for="marqueVehicule">Marque du vehicule</label>
+                                        <nz-form-control
+                                            [nzValidateStatus]="marqueVehicule.invalid ? 'error' : 'success'"
+                                            nzErrorTip="* Champ obligatoire">
+                                            <input id="marqueVehicule" nz-input placeholder="MarqueVehicule"
+                                                [(ngModel)]="detailAdversaire.marqueVehicule" [required]="true"
+                                                name="marqueVehicule" #marqueVehicule="ngModel" />
+                                        </nz-form-control>
+                                    </div>
+
+                                    <div class="form-group col-sm-4">
+                                        <label for="modeleVehicule">Modèle du vehicule</label>
+                                        <nz-form-control
+                                            [nzValidateStatus]="modeleVehicule.invalid ? 'error' : 'success'"
+                                            nzErrorTip="* Champ obligatoire">
+                                            <input id="modeleVehicule" nz-input placeholder="ModeleVehicule"
+                                                [(ngModel)]="detailAdversaire.modeleVehicule" [required]="true"
+                                                name="modeleVehicule" #modeleVehicule="ngModel" />
+                                        </nz-form-control>
+                                    </div>
+
+                                    <div class="form-group col-sm-4">
+                                        <label for="immatriculation">Immatriculation</label>
+                                        <nz-form-control
+                                            [nzValidateStatus]="immatriculation.invalid ? 'error' : 'success'"
+                                            nzErrorTip="* Champ obligatoire">
+                                            <input id="immatriculation" nz-input placeholder="Immatriculation"
+                                                [(ngModel)]="detailAdversaire.immatriculation" name="immatriculation"
+                                                #immatriculation="ngModel" />
+                                        </nz-form-control>
+                                    </div>
+
+                                    <div class="form-group col-sm-12">
+                                        <label for="details">Description</label>
+                                        <nz-form-control [nzValidateStatus]="description.invalid ? 'error' : 'success'"
+                                            nzErrorTip="* Champ obligatoire">
+                                            <ckeditor nz-input [required]="true" id="description" name="description"
+                                                #description="ngModel" [(ngModel)]="detailAdversaire.description"
+                                                [editor]="editor">
+                                            </ckeditor>
+                                        </nz-form-control>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </ng-container>
+
+
+                    </div>
+                    <div class="card-footer bg-white border-0">
+                        <div class="steps-action d-flex justify-content-end">
+                            <button nz-button nzType="default" (click)="pre()" *ngIf="current > 0">
+                                <i class="fa fa-arrow-circle-left"></i> &nbsp;
+                                <span>Precédent</span>
+                            </button>&nbsp;
+                            <button nz-button [disabled]="accidentForm.invalid" nzType="default" (click)="next()"
+                                *ngIf="current === 0">
+                                <span>Suivant</span>&nbsp;
+                                <i class="fa fa-arrow-circle-right"></i>
+                            </button>&nbsp;
+                            <button nz-button [nzLoading]="loadingIndicator" (click)="update()" nzType="primary"
+                                *ngIf="current === 1">
+                                <span>Modifier</span>&nbsp;
+                                <i class="fa fa-check-circle"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+        </div>
+    </form>
+</div>

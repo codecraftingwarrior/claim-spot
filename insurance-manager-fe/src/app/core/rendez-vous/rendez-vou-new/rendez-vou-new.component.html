@@ -1,0 +1,31 @@
+<div class="container w-100">
+    <form role="form" #rendezVouForm="ngForm" autocomplete="off">
+        <ngx-spinner type="ball-clip-rotate-pulse" [fullScreen]="false"></ngx-spinner>
+        <div class="row">
+
+            <div class="col-sm-12">
+                <app-creneau-selection (select)="onCreneauSelected($event)" ></app-creneau-selection>
+            </div>
+
+            <div class="form-group col-sm-12">
+                <label for="message">Message</label>
+                <nz-form-control [nzValidateStatus]="message.invalid ? 'error' : 'success'"
+                    nzErrorTip="* Champ obligatoire">
+                    <ckeditor nz-input [required]="true" id="message" name="description" #message="ngModel"
+                        [(ngModel)]="rendezVou.description" [editor]="editor">
+                    </ckeditor>
+                </nz-form-control>
+            </div>
+
+
+            <div class="form-group col-sm-12 col-lg-12 col-md-12 d-flex justify-content-end">
+                <button class="btn btn-primary" [disabled]="rendezVouForm.invalid" (click)="create()">
+                    Valider
+                    <i class="fa fa-check-circle" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+
+
+    </form>
+</div>

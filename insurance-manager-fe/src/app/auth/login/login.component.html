@@ -1,0 +1,43 @@
+<main class="d-flex align-items-center min-vh-100 py-3 py-md-0">
+  <div class="container">
+    <div class="card login-card">
+      <div class="row no-gutters">
+        <div class="col-md-5">
+          <img src="assets/img/auth/login.jpg" alt="login" class="login-card-img">
+        </div>
+        <div class="col-md-7">
+          <div class="card-body">
+            <div class="brand-wrapper">
+              <h4>CIA</h4>
+            </div>
+            <p class="login-card-description">Connectez - vous</p>
+            <form role="form" autocomplete="off" #loginForm="ngForm">
+              <div class="form-group">
+                <label for="email" class="sr-only">Email</label>
+                <input type="email" [(ngModel)]="credentials.username"
+                  [class.is-valid]="username.touched && username.valid" [class.is-invalid]="username.touched && username.invalid"
+                  name="email" id="email" #username="ngModel" required class="form-control"
+                  placeholder="Adresse electronique">
+              </div>
+              <div class="form-group mb-4">
+                <label for="password" class="sr-only">Mot de passe</label>
+                <input type="password" [(ngModel)]="credentials.password" name="password"
+                  [class.is-valid]="password.touched && password.valid" [class.is-invalid]="password.touched && password.invalid" required
+                  #password="ngModel" id="password" class="form-control" placeholder="mot de passe">
+              </div>
+              <input name="login" (click)="signIn()" id="login" class="btn btn-block login-btn mb-4" type="button" value="Se connecter">
+            </form>
+            <a href="javascript:void(0)" class="forgot-password-link">Mot de passe oublié ?</a>
+            <!-- <p class="login-card-footer-text">Pas de compte ? 
+                  <a [routerLink]="['/auth', 'register']" class="text-reset custom-text-hover">Inscrivez - vous</a>
+                </p>-->
+            <nav class="login-card-footer-nav">
+              <a href="#!"> &copy; Copyright <strong><span>CIA</span></strong>. Tous droits réservés</a>
+              <!-- <a href="#!">Privacy policy</a> -->
+            </nav>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

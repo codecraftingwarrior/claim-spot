@@ -1,0 +1,27 @@
+<div class="container w-100">
+    <form role="form" #roleForm="ngForm" autocomplete="off">
+        <ngx-spinner type="ball-clip-rotate-pulse" [fullScreen]="false"></ngx-spinner>
+        <div class="form-group col-sm-12">
+            <label for="code">Code</label>
+            <nz-form-control [nzValidateStatus]="code.invalid ? 'error' : 'success'" nzErrorTip="* Champs obligatoire">
+                <input id="code" nz-input placeholder="Code" [(ngModel)]="role.code" [required]="true" name="code"
+                    #code="ngModel" />
+            </nz-form-control>
+        </div>
+
+        <div class="form-group col-sm-12">
+            <label for="nom">Nom</label>
+            <nz-form-control [nzValidateStatus]="nom.invalid ? 'error' : 'success'" nzErrorTip="* Champs obligatoire">
+                <input id="nom" nz-input placeholder="Nom" [(ngModel)]="role.nom" [required]="true" name="nom"
+                    #nom="ngModel" />
+            </nz-form-control>
+        </div>
+
+        <div class="form-group col-sm-12 col-lg-12 col-md-12 d-flex justify-content-end">
+            <button class="btn btn-primary" [disabled]="roleForm.invalid" (click)="update()">
+                Valider
+                <i class="fa fa-check-circle" aria-hidden="true"></i>
+            </button>
+        </div>
+    </form>
+</div>

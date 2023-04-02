@@ -1,0 +1,48 @@
+<div class="container w-100">
+    <form role="form" #categorieVehiculeForm="ngForm" autocomplete="off">
+        <ngx-spinner type="ball-clip-rotate-pulse" [fullScreen]="false"></ngx-spinner>
+        <div class="row">
+            <div class="form-group col-sm-6">
+                <label for="prenom">Code</label>
+                <nz-form-control [nzValidateStatus]="code.invalid ? 'error' : 'success'"
+                    nzErrorTip="* Champ obligatoire">
+                    <input id="code" nz-input placeholder="Code" [(ngModel)]="categorieVehicule.code" [required]="true"
+                        name="code" #code="ngModel" />
+                </nz-form-control>
+            </div>
+            <div class="form-group col-sm-6">
+                <label for="prenom">Libelle</label>
+                <nz-form-control [nzValidateStatus]="libelle.invalid ? 'error' : 'success'"
+                    nzErrorTip="* Champ obligatoire">
+                    <input id="libelle" nz-input placeholder="Libelle" [(ngModel)]="categorieVehicule.libelle"
+                        [required]="true" name="libelle" #libelle="ngModel" />
+                </nz-form-control>
+            </div>
+
+            <div class="form-group col-sm-6">
+                <label for="prenom">Icône</label>
+                <nz-form-control [nzValidateStatus]="icon.invalid ? 'error' : 'success'"
+                    nzErrorTip="* Champ obligatoire">
+                    <ng-select name="icon" required nz-input [closeOnSelect]="false"
+                        placeholder="Chosissez une icône" #icon="ngModel" appendTo="body"
+                        [multiple]="false" [searchable]="true" [(ngModel)]="categorieVehicule.icon">
+                        <ng-option *ngFor="let icon of icons" [value]="icon.value">
+                            <i [class]="icon.value" aria-hidden="true"></i>&nbsp;
+                            {{ icon.label }}
+                        </ng-option>
+                    </ng-select>
+                </nz-form-control>
+            </div>
+
+
+            <div class="form-group col-sm-12 col-lg-12 col-md-12 d-flex justify-content-end">
+                <button class="btn btn-primary" [disabled]="categorieVehiculeForm.invalid" (click)="create()">
+                    Valider
+                    <i class="fa fa-check-circle" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+
+
+    </form>
+</div>

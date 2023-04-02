@@ -1,0 +1,113 @@
+<div class="pl-lg-4">
+    <form role="form" #managePermission="ngForm" autocomplete="off">
+        <div class="row">
+            <ngx-spinner type="ball-clip-rotate-pulse" [fullScreen]="false"></ngx-spinner>
+            <div class="col-lg-6" *ngFor="let entityGroup of entityGroups">
+                <div class="card mb-2">
+                    <div class="card-body">
+                        <table class="table table-hover table-responsive-md table-responsive-lg table-responsive-sm">
+                            <thead>
+                                <tr>
+                                    <th colspan="8" class="text-center">
+                                        {{entityGroup.groupName}}
+                                    </th>
+                                </tr>
+                                <tr>
+
+                                    <th>
+                                        <div class="custom-control custom-checkbox">
+                                            <input (change)="handleEntityGroupSelection($event,entityGroup)"
+                                                type="checkbox" class="custom-control-input"
+                                                id="check{{entityGroup.groupName}}Group">
+                                            <label class="custom-control-label"
+                                                for="check{{entityGroup.groupName}}Group"></label>
+                                        </div>
+                                    </th>
+                                    <th>Nom</th>
+                                    <th scope="col">
+                                        <i class="fa fa-list" aria-hidden="true"></i>
+                                    </th>
+                                    <th scope="col">
+                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                    </th>
+                                    <th scope="col">
+                                        <i class="fa fa-edit" aria-hidden="true"></i>
+                                    </th>
+                                    <th scope="col">
+                                        <i class="fa fa-trash" aria-hidden="true"></i>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let entityPermission of entityGroup.entityPermissions; let i=index">
+                                    <td>
+                                        <div class="custom-control custom-checkbox ">
+                                            <input (change)="handleEntityPermissionSelection($event,entityPermission)"
+                                                [(ngModel)]="entityPermission.allPermitted" type="checkbox"
+                                                class="custom-control-input"
+                                                id="check{{entityPermission.entityName}}Access"
+                                                name="check{{entityPermission.entityName}}Access">
+                                            <label class="custom-control-label"
+                                                for="check{{entityPermission.entityName}}Access"></label>
+                                        </div>
+                                    </td>
+                                    <td scope="row">{{entityPermission.entityName}}</td>
+                                    <td>
+                                        <div class="custom-control custom-checkbox">
+                                            <input name="{{entityPermission.entityName}}Index"
+                                                [(ngModel)]="entityPermission.isViewAllPermitted" type="checkbox"
+                                                (change)="onItemStateChanges($event, entityPermission)"
+                                                class="custom-control-input" id="{{entityPermission.entityName}}Index">
+                                            <label class="custom-control-label"
+                                                for="{{entityPermission.entityName}}Index"></label>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="custom-control custom-checkbox">
+                                            <input name="{{entityPermission.entityName}}Show"
+                                                [(ngModel)]="entityPermission.isViewOnePermitted" type="checkbox"
+                                                (change)="onItemStateChanges($event, entityPermission)"
+                                                class="custom-control-input" id="{{entityPermission.entityName}}Show">
+                                            <label class="custom-control-label"
+                                                for="{{entityPermission.entityName}}Show"></label>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="custom-control custom-checkbox">
+                                            <input name="{{entityPermission.entityName}}Edit"
+                                                [(ngModel)]="entityPermission.isWritePermitted"
+                                                (change)="onItemStateChanges($event, entityPermission)" type="checkbox"
+                                                class="custom-control-input" id="{{entityPermission.entityName}}Edit">
+                                            <label class="custom-control-label"
+                                                for="{{entityPermission.entityName}}Edit"></label>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="custom-control custom-checkbox">
+                                            <input name="{{entityPermission.entityName}}Delete"
+                                                [(ngModel)]="entityPermission.isDeletePermitted"
+                                                (change)="onItemStateChanges($event, entityPermission)" type="checkbox"
+                                                class="custom-control-input" id="{{entityPermission.entityName}}Delete">
+                                            <label class="custom-control-label"
+                                                for="{{entityPermission.entityName}}Delete"></label>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row d-flex align-items-ends justify-content-end">
+            <div class="col-12 text-right">
+
+                <button (click)="commitChanges()" type="button" class="btn btn-primary">
+                    Valider les changement
+                    <i class="fa fa-check-circle" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+    </form>
+
+</div>

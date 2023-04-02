@@ -1,0 +1,73 @@
+<div class="container w-100">
+    <form role="form" #detailAdversaireForm="ngForm" autocomplete="off">
+        <ngx-spinner type="ball-clip-rotate-pulse" [fullScreen]="false"></ngx-spinner>
+        <div class="row">
+            <div class="form-group col-sm-4">
+                <label for="prenom">Prenom</label>
+                <nz-form-control [nzValidateStatus]="prenom.invalid ? 'error' : 'success'"
+                    nzErrorTip="* Champ obligatoire">
+                    <input id="prenom" nz-input placeholder="Prenom" [(ngModel)]="detailAdversaire.prenom" name="prenom"
+                        #prenom="ngModel" />
+                </nz-form-control>
+            </div>
+
+            <div class="form-group col-sm-4">
+                <label for="nom">Nom</label>
+                <nz-form-control [nzValidateStatus]="nom.invalid ? 'error' : 'success'"
+                    nzErrorTip="* Champ obligatoire">
+                    <input id="nom" nz-input placeholder="Nom" [(ngModel)]="detailAdversaire.nom" name="nom"
+                        #nom="ngModel" />
+                </nz-form-control>
+            </div>
+
+            <div class="form-group col-sm-4">
+                <label for="genre">Genre</label>
+                <nz-form-control [nzValidateStatus]="genre.invalid ? 'error' : 'success'"
+                    nzErrorTip="* Champ obligatoire">
+                    <input id="genre" nz-input placeholder="Genre" [(ngModel)]="detailAdversaire.genre"
+                        [required]="true" name="genre" #genre="ngModel" />
+                </nz-form-control>
+            </div>
+
+            <div class="form-group col-sm-6">
+                <label for="marqueVehicule">Marque du vehicule</label>
+                <nz-form-control [nzValidateStatus]="marqueVehicule.invalid ? 'error' : 'success'"
+                    nzErrorTip="* Champ obligatoire">
+                    <input id="marqueVehicule" nz-input placeholder="MarqueVehicule"
+                        [(ngModel)]="detailAdversaire.marqueVehicule" [required]="true" name="marqueVehicule"
+                        #marqueVehicule="ngModel" />
+                </nz-form-control>
+            </div>
+
+            <div class="form-group col-sm-6">
+                <label for="modeleVehicule">Modèle du vehicule</label>
+                <nz-form-control [nzValidateStatus]="modeleVehicule.invalid ? 'error' : 'success'"
+                    nzErrorTip="* Champ obligatoire">
+                    <input id="modeleVehicule" nz-input placeholder="ModeleVehicule"
+                        [(ngModel)]="detailAdversaire.modeleVehicule" [required]="true" name="modeleVehicule"
+                        #modeleVehicule="ngModel" />
+                </nz-form-control>
+            </div>
+            
+            <div class="form-group col-sm-6">
+                <label for="immatriculation">Immatriculation</label>
+                <nz-form-control [nzValidateStatus]="immatriculation.invalid ? 'error' : 'success'"
+                    nzErrorTip="* Champ obligatoire">
+                    <input id="immatriculation" nz-input placeholder="Immatriculation"
+                        [(ngModel)]="detailAdversaire.immatriculation" name="immatriculation"
+                        #immatriculation="ngModel" />
+                </nz-form-control>
+            </div>
+
+
+            <div class="form-group col-sm-12 col-lg-12 col-md-12 d-flex justify-content-end">
+                <button class="btn btn-primary" [disabled]="detailAdversaireForm.invalid" (click)="create()">
+                    Valider
+                    <i class="fa fa-check-circle" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+
+
+    </form>
+</div>

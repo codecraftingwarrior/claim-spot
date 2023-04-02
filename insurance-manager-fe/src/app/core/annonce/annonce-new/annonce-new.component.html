@@ -1,0 +1,38 @@
+<div class="container w-100">
+    <form role="form" #annonceForm="ngForm" autocomplete="off">
+        <ngx-spinner type="ball-clip-rotate-pulse" [fullScreen]="false"></ngx-spinner>
+        <div class="row">
+            <div class="form-group col-sm-6">
+                <label class="form-control-label" for="type">Type</label>
+                <nz-form-control [nzValidateStatus]="type.invalid ? 'error' : 'success'"
+                    nzErrorTip="* Champ obligatoire">
+                    <ng-select name="type" required [items]="['Location', 'Vente']"
+                        placeholder="Selectionner le type de l'annonce" #type="ngModel" appendTo="body"
+                        [multiple]="false" [searchable]="true" [(ngModel)]="annonce.type">
+                    </ng-select>
+                </nz-form-control>
+            </div>
+
+            <div class="form-group col-sm-6">
+                <label for="prenom">Prix <span *ngIf="annonce.type === 'Location'" > / Jour</span>  </label>
+                <nz-form-control [nzValidateStatus]="prix.invalid ? 'error' : 'success'"
+                    nzErrorTip="* Champ obligatoire">
+                    <input id="prix" nz-input placeholder="Prix"
+                        [options]="{ prefix: '', suffix: ' F CFA ', thousands: '.', decimal: ',', allowNegative: false }"
+                        currencyMask [(ngModel)]="annonce.prix" [required]="true" name="prix" #prix="ngModel" />
+                </nz-form-control>
+            </div>
+
+           
+
+            <div class="form-group col-sm-12 col-lg-12 col-md-12 d-flex justify-content-end">
+                <button class="btn btn-primary" [disabled]="annonceForm.invalid" (click)="create()">
+                    Valider
+                    <i class="fa fa-check-circle" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+
+
+    </form>
+</div>

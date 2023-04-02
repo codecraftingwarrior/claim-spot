@@ -1,0 +1,173 @@
+<div class="container-fluid d-flex w-100 h-75 align-items-center justify-content-center">
+    <div class="col-xl-12 col-md-12 mb-2 ">
+        <div class="row mt-2 mb-3">
+            <div class="col-12">
+                <nz-card style="width:100%;">
+                    <div class="d-flex justify-content-between">
+                        <button type="button" class="btn btn-primary" (click)="location.back()">
+                            <i class="fa fa-arrow-left" aria-hidden="true"></i> Retour
+                        </button> &nbsp;
+                        <!--<h4 > Gestion des <span class="font-weigh-bold">role</span> </h4>-->
+                    </div>
+
+                </nz-card>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-xl-12  mb-xl-0">
+                <div class="card shadow mb-2">
+                    <div class="card-header p-4 border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Categories - Vehicules</h3>
+                            </div>
+
+                            <div class="col">
+                                <input class="form-control form-control-alternative" (keyup)="updateFilter($event)"
+                                    placeholder="Rechercher" type="text">
+                            </div>
+
+                            <div class="col text-right">
+                                <button type="button" (click)="refresh()"
+                                    [hidden]="!authSrv.hasListAuthority(categorieVehiculeSrv.resourceName)"
+                                    routerLinkActive="router-link-active" class="btn btn-dark">
+                                    <i class="fas fa-sync"></i>
+                                    Raffraichir
+                                </button>
+                                &nbsp;
+                                <button type="button" (click)="isNewModalVisible = true"
+                                    [hidden]="!authSrv.hasWriteAuthority(categorieVehiculeSrv.resourceName)"
+                                    routerLinkActive="router-link-active" class="btn btn-primary">
+                                    <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                                    Ajouter
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row  ">
+            <div class="col-xl-12 mb-xl-0">
+                <div class="card shadow">
+                    <ngx-spinner type="ball-clip-rotate-pulse"
+                        [hidden]="(isEditModalVisible || isNewModalVisible || isViewModalVisible)" [fullScreen]="false">
+                    </ngx-spinner>
+                    <ngx-datatable #table
+                        *ngIf="categorieVehicules.length && (authSrv.hasListAuthority(categorieVehiculeSrv.resourceName))"
+                        class="material expandable" [columns]="columns" [columnMode]="'force'" [columnMode]="'force'"
+                        [scrollbarH]="true" [loadingIndicator]="loadingIndicator"
+                        [messages]="{ emptyMessage: 'Aucun élément a afficher', totalMessage: 'élément(s)', selectedMessage: 'Selectionné(s)' }"
+                        [headerHeight]="50" [footerHeight]="50" rowHeight="auto" [limit]="10"
+                        [rows]="categorieVehicules">
+
+                        <ngx-datatable-column name="Actions">
+
+                            <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+
+
+                                <!--<button (click)="displayViewModal(row)"
+                                    [hidden]="!authSrv.hasViewAuthority(categorieVehiculeSrv.resourceName)"
+                                    type="button" nzTooltipTitle="Details" nzTooltipPlacement="top" nz-tooltip
+                                    class="btn btn-sm btn-info">
+                                    <i class="fa fa-eye"></i>
+                                </button>&nbsp;-->
+
+                                <button (click)="displayEditModal(row)"
+                                    [hidden]="!authSrv.hasWriteAuthority(categorieVehiculeSrv.resourceName)"
+                                    type="button" nzTooltipTitle="Modifier" nzTooltipPlacement="top" nz-tooltip
+                                    class="btn btn-sm btn-warning">
+                                    <i class="fas fa-pen-square"></i>
+                                </button>&nbsp;
+
+                                <button type="button" class="btn btn-sm btn-danger" (click)="delete(row)"
+                                    [hidden]="!authSrv.hasDeleteAuthority(categorieVehiculeSrv.resourceName)"
+                                    nzTooltipTitle="Supprimer" nzTooltipPlacement="top" nz-tooltip>
+                                    <i class="fa fa-trash"></i>
+                                </button>
+
+                            </ng-template>
+                        </ngx-datatable-column>
+
+                        <ngx-datatable-column name="Code">
+                            <ng-template let-rowIndex="rowIndex" let-row="row" ngx-datatable-cell-template>
+                                {{ row.code }}
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Libelle">
+                            <ng-template let-rowIndex="rowIndex" let-row="row" ngx-datatable-cell-template>
+                                {{ row.libelle }}
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Icône">
+                            <ng-template let-rowIndex="rowIndex" let-row="row" ngx-datatable-cell-template>
+                                <i [class]="row.icon" style="font-size: 20px;" aria-hidden="true"></i>
+                            </ng-template>
+                        </ngx-datatable-column>
+
+                    </ngx-datatable>
+
+                    <app-empty-indicator
+                        *ngIf="!categorieVehicules.length && authSrv.hasListAuthority(categorieVehiculeSrv.resourceName)"
+                        [isGrantedCreate]="authSrv.hasWriteAuthority(categorieVehiculeSrv.resourceName)"
+                        (buttonClicked)="isNewModalVisible = true"></app-empty-indicator>
+                    <app-access-denied-indicator *ngIf="!authSrv.hasListAuthority(categorieVehiculeSrv.resourceName)">
+                    </app-access-denied-indicator>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<nz-modal [nzMaskClosable]="false" [(nzVisible)]="isNewModalVisible" [nzClosable]="true" [nzWidth]="'70%'"
+    [nzTitle]="newModalTitle" [nzContent]="newModalContent" [nzFooter]="null" (nzOnCancel)="isNewModalVisible = false">
+    <ng-template #newModalTitle>
+        <span class="font-weight-bold">Formulaire de creation</span>
+    </ng-template>
+
+    <ng-template #newModalContent>
+        <app-categorie-vehicule-new (created)="onCreated($event)"></app-categorie-vehicule-new>
+    </ng-template>
+
+    <ng-template #newModalFooter>
+        <button nz-button nzType="primary" (click)="isNewModalVisible = false">Fermer</button>
+    </ng-template>
+</nz-modal>
+
+
+<nz-modal [nzMaskClosable]="false" [(nzVisible)]="isEditModalVisible" [nzClosable]="true" [nzWidth]="'70%'"
+    [nzTitle]="updateModalTitle" [nzContent]="updateModalContent" [nzFooter]="null"
+    (nzOnCancel)="isEditModalVisible = false">
+    <ng-template #updateModalTitle>
+        <span class="font-weight-bold">Formulaire de modification</span>
+    </ng-template>
+
+    <ng-template #updateModalContent>
+        <app-categorie-vehicule-edit [categorieVehicule]="selectedCategorieVehicule" (updated)="onUpdated($event)">
+        </app-categorie-vehicule-edit>
+    </ng-template>
+
+    <ng-template #modalFooter>
+        <button nz-button nzType="primary" (click)="isEditModalVisible = false">Fermer</button>
+    </ng-template>
+</nz-modal>
+
+
+<nz-modal [nzMaskClosable]="false" [(nzVisible)]="isViewModalVisible" [nzClosable]="true" [nzWidth]="'60%'"
+    [nzTitle]="viewModalTitle" [nzContent]="viewModalContent" [nzFooter]="null"
+    (nzOnCancel)="isViewModalVisible = false">
+    <ng-template #viewModalTitle>
+        <span class="font-weight-bold">CategorieVehicule - Details</span>
+    </ng-template>
+
+    <ng-template #viewModalContent>
+        <app-categorie-vehicule-detail [categorieVehicule]="selectedCategorieVehicule"></app-categorie-vehicule-detail>
+    </ng-template>
+
+    <ng-template #modalFooter>
+        <button nz-button nzType="primary" (click)="isViewModalVisible = false">Fermer</button>
+    </ng-template>
+</nz-modal>

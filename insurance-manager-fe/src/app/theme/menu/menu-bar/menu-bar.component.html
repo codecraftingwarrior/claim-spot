@@ -1,0 +1,76 @@
+<!-- ======= Header ======= -->
+<header id="header" class="fixed-top">
+    <div class="container-fluid w-75 d-flex align-items-center justify-content-between">
+
+        <h1 class="logo ml-0 mr-auto"><a [routerLink]="['/home']">CIA<span>.</span></a></h1>
+
+        <nav class="nav-menu d-none d-lg-block" *ngIf="displayMenu">
+            <ul>
+                <li routerLinkActive="active" *ngFor="let menuItem of menuItems">
+                    <a [routerLink]="menuItem.path">
+                        <i [class]="menuItem.icon" style="font-size: 14px;"></i>
+                        {{ menuItem.title }}
+                    </a>
+                </li>
+                <li routerLinkActive="active" class="drop-down" [hidden]="!hasAtLeastOneSubItemGranted(hasSubMenuItem) || !authSrv.hasAnyAuthority(['ROLE_SA', 'ROLE_RESP'])"
+                    *ngFor="let hasSubMenuItem of hasSubMenuItems">
+                    <a href="javascript:void(0)">
+                        <i [class]="hasSubMenuItem.icon" style="font-size: 14px;"></i>
+                        {{ hasSubMenuItem.title }}
+                    </a>
+                    <ul>
+                        <li *ngFor="let menuItem of hasSubMenuItem.subItems"
+                            [hidden]="!authSrv.hasAnyResourceAuthority(menuItem?.resourceName)">
+                            <a [routerLink]="menuItem.path">
+                                <i [class]="menuItem.icon" style="font-size: 14px;"></i>
+                                {{ menuItem.title }}
+                            </a>
+                        </li>
+                        <!--<li class="drop-down"><a href="#">Deep Drop Down</a>
+                                <ul>
+                                    <li><a href="#">Deep Drop Down 1</a></li>
+                                    <li><a href="#">Deep Drop Down 2</a></li>
+                                    <li><a href="#">Deep Drop Down 3</a></li>
+                                    <li><a href="#">Deep Drop Down 4</a></li>
+                                    <li><a href="#">Deep Drop Down 5</a></li>
+                                </ul>
+                            </li>-->
+                    </ul>
+                </li>
+                <li routerLinkActive="active" *ngIf="authSrv.isLoggedIn() && (authSrv.hasAnyRole(['ROLE_RESP', 'ROLE_AS', 'ROLE_EXP']) )">
+                    <a [routerLink]="['/core','espace-personnel']">
+                        <span *ngIf="authSrv.hasRole('ROLE_AS')">
+                            <i [class]="'fas fa-user-lock'" style="font-size: 14px;"></i>&nbsp;
+                            <span>Mon espace personnel</span>
+                        </span>
+
+                        <span *ngIf="authSrv.hasAnyRole(['ROLE_RESP', 'ROLE_EXP'])">
+                            <i class="fas fa-paste" style="font-size: 14px;"></i>&nbsp;
+                            <span>Mon Espace de travail</span>
+                        </span>
+                    </a>
+                </li>
+                &nbsp;&nbsp;&nbsp;&nbsp;
+
+                <button type="button" *ngIf="!authSrv.isLoggedIn()" name="loginButton" [routerLink]="['/auth', 'login']"
+                    id="loginButton" class="btn-sm btn btn-primary d-inline ml-5">
+                    Connectez-vous
+                </button>
+
+                <button type="button" *ngIf="authSrv.isLoggedIn()" name="logout" (click)="authSrv.logout()" id="logout"
+                    class="btn-sm btn btn-danger d-inline ml-5">
+                    Deconnexion
+                    <i class="fa fa-power-off" aria-hidden="true"></i>
+                </button>
+
+
+            </ul>
+        </nav><!-- .nav-menu -->
+        <span class="d-block ml-5" *ngIf="authSrv.isLoggedIn()">
+            <!--<span class="badge badge-success" style="font-size: x-small;">{{userEmail}}</span>-->
+            <span class="dot"></span> En ligne
+        </span>
+
+
+    </div>
+</header><!-- End Header -->

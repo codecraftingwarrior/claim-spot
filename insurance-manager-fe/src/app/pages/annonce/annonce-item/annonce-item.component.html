@@ -1,0 +1,65 @@
+<div class="product-grid">
+    <div class="product-image">
+        <a href="#" class="image">
+            <img class="pic-1" [src]="annonce?.vehicule?.image">
+        </a>
+        <span class="product-discount-label">
+            {{annonce.type}}
+        </span>
+        <ul class="product-links">
+            <li><a [href]="'tel:+221' + annonce?.vehicule?.applicationUser?.telephone" data-tip="Appeler"><i class="bx bxs-phone-call"></i></a></li>
+            <li><a href="javascript:void(0)" (click)="shareButtonsVisible = true" data-tip="Partager"><i
+                        class="bx bxs-share-alt"></i></a></li>
+            <!--<li><a href="#" data-tip="Quick View"><i class="fa fa-search"></i></a></li>-->
+        </ul>
+    </div>
+    <div class="product-content">
+        <!--<ul class="rating">
+            <li class="fas fa-star"></li>
+            <li class="fas fa-star"></li>
+            <li class="fas fa-star"></li>
+            <li class="far fa-star"></li>
+            <li class="far fa-star"></li>
+        </ul>-->
+        <h3 class="title d-inline">
+            <a href="#">
+                <i class='bx bx-package'></i>
+                {{annonce.libelle}}
+            </a>
+        </h3>
+        <div class="price">
+            <!--<span>$90.00</span>-->
+            <i class='bx bx-coin-stack'></i>
+            {{annonce.prix | currency:'F CFA':'code':'3.2-2':'fr'}}
+        </div>
+
+        <div class="timeago">
+            <!--<span>$90.00</span>-->
+            <i class='bx bx-time'></i>&nbsp;
+            <div class="d-inline" timeago [live]="true" [date]="annonce.createdAt"></div>
+        </div>
+        <!--<a class="add-to-cart" href="#">add to cart</a>-->
+    </div>
+</div>
+
+<nz-modal [nzMaskClosable]="false" [(nzVisible)]="shareButtonsVisible" [nzClosable]="true" [nzWidth]="'40%'"
+    [nzTitle]="sharedButtonTitle" [nzContent]="shareButtonContent" [nzFooter]="null"
+    (nzOnCancel)="shareButtonsVisible = false">
+    <ng-template #sharedButtonTitle>
+        <span class="font-weight-bold">Partager sur les réseaux</span>
+    </ng-template>
+
+    <ng-template #shareButtonContent>
+        <div class="row d-flex justify-content-center">
+            <div class="col-8">
+                <share-buttons theme="material-dark"
+                    [include]="['facebook', 'twitter', 'linkedin', 'whatsapp', 'email']" show="5"
+                    [title]="'Annonce de ' + annonce?.type" [url]="'https://cia-assurance.firebaseapp.com/annonce'"
+                    [image]="'assets/img/defaults/bg-main.jpg'" [description]="annonce?.type + ' ' + annonce?.libelle">
+                </share-buttons>
+            </div>
+        </div>
+
+    </ng-template>
+
+</nz-modal>

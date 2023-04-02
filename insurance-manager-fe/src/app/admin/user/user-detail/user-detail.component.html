@@ -1,0 +1,35 @@
+<nz-descriptions nzTitle="User Info">
+    <nz-descriptions-item nzTitle="E-mail"> {{user?.username}} </nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Prenom">{{ user?.prenom }}</nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Nom"> {{ user?.nom }} </nz-descriptions-item>
+    <nz-descriptions-item nzTitle="telephone"> {{ user?.telephone }} </nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Adresse">
+        {{ user?.adresse }}
+    </nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Fonction">
+        {{ user?.fonction }}
+    </nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Genre">
+        <span class="badge badge-primary" style="font-size: 15px;">
+            <i class="fa fa-male" *ngIf="user?.genre?.toLowerCase() === 'homme'" aria-hidden="true"></i>
+            <i class="fa fa-female" *ngIf="user?.genre?.toLowerCase() === 'femme'" aria-hidden="true"></i>
+            &nbsp;{{user.genre}}
+        </span>
+
+    </nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Etat du compte">
+        <span *ngIf="user?.enabled" style="font-size: 15px;" class="badge badge-success">Actif</span>
+        <span *ngIf="!user?.enabled" style="font-size: 15px;" class="badge badge-danger">Inactif</span>
+    </nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Formule">
+        {{ user?.formule?.libelle }}
+    </nz-descriptions-item>
+
+    <nz-descriptions-item nzTitle="Roles">
+        <tag-input [(ngModel)]='user.roles' name="group" [identifyBy]="'id'" [disable]='true' [removable]='false'
+            [displayBy]="'nom'" theme='bootstrap' [placeholder]="''" [secondaryPlaceholder]="'Aucun Role'">
+        </tag-input>
+    </nz-descriptions-item>
+
+
+</nz-descriptions>

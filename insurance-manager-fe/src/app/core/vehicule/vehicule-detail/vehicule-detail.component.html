@@ -1,0 +1,23 @@
+<nz-descriptions nzTitle="Informations">
+    <nz-descriptions-item nzTitle="Immatriculation">
+        {{ vehicule?.immatriculation }}
+    </nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Marque">
+        {{ vehicule?.marque }}
+    </nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Modele">
+        {{ vehicule?.modele }}
+    </nz-descriptions-item>
+</nz-descriptions>
+
+<div class="card shadow">
+    <div class="card-body">
+        <div class="pl-lg-4">
+            <div class="row d-flex justify-content-center">
+                <div class="col-sm-12 col-xl-12">
+                  <img style="width: 100%; height: 100%;" [src]="vehicule?.image" />
+                </div>
+              </div>
+        </div>
+    </div>
+</div>

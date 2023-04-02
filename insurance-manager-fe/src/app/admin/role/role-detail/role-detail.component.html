@@ -1,0 +1,54 @@
+<div class="row">
+    <ngx-spinner type="ball-clip-rotate-pulse" [fullScreen]="false"></ngx-spinner>
+    <div class="card col-sm-6 col-xl-6 col-md-6 col-lg-6" *ngFor="let entityGroup of roleView?.entityGroups">
+        <div class="card-body">
+            <table class="table table-responsive-md table-responsive-lg table-responsive-sm table-hover">
+                <thead>
+                    <tr>
+                        <th colspan="8" class="text-center">
+                            {{ entityGroup.groupName }}
+                        </th>
+                    </tr>
+                    <tr>
+                        <th>Nom</th>
+                        <th>
+                            <i class="fa fa-list" aria-hidden="true"></i>
+                        </th>
+                        <th>
+                            <i class="fa fa-eye" aria-hidden="true"></i>
+                        </th>
+                        <th>
+                            <i class="fa fa-edit" aria-hidden="true"></i>
+                        </th>
+                        <th>
+                            <i class="fa fa-trash" aria-hidden="true"></i>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let entityPermission of entityGroup.entityPermissions">
+                        <td scope="row">{{ entityPermission.entityName }}</td>
+                        <td [ngSwitch]="entityPermission.isViewAllPermitted">
+                            <i *ngSwitchCase="true" class="fa fa-check-circle" aria-hidden="true"></i>
+                            <i *ngSwitchCase="false" class="fa fa-times" aria-hidden="true"></i>
+                        </td>
+
+                        <td [ngSwitch]="entityPermission.isViewOnePermitted">
+                            <i *ngSwitchCase="true" class="fa fa-check-circle" aria-hidden="true"></i>
+                            <i *ngSwitchCase="false" class="fa fa-times" aria-hidden="true"></i>
+                        </td>
+                        <td [ngSwitch]="entityPermission.isWritePermitted">
+                            <i *ngSwitchCase="true" class="fa fa-check-circle" aria-hidden="true"></i>
+                            <i *ngSwitchCase="false" class="fa fa-times" aria-hidden="true"></i>
+                        </td>
+                        <td [ngSwitch]="entityPermission.isDeletePermitted">
+                            <i *ngSwitchCase="true" class="fa fa-check-circle" aria-hidden="true"></i>
+                            <i *ngSwitchCase="false" class="fa fa-times" aria-hidden="true"></i>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>

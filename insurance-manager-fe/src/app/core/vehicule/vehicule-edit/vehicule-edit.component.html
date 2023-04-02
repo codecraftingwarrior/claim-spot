@@ -1,0 +1,85 @@
+<div class="container w-100">
+    <form role="form" #vehiculeForm="ngForm" autocomplete="off">
+        <ngx-spinner type="ball-clip-rotate-pulse" [fullScreen]="false"></ngx-spinner>
+        <div class="row">
+            <div class="form-group col-sm-6">
+                <label for="immatriculation">Immatriculation</label>
+                <nz-form-control [nzValidateStatus]="immatriculation.invalid ? 'error' : 'success'"
+                    nzErrorTip="* Champ obligatoire">
+                    <input id="immatriculation" nz-input placeholder="Immatriculation"
+                        [(ngModel)]="vehicule.immatriculation" [required]="true" name="immatriculation"
+                        #immatriculation="ngModel" />
+                </nz-form-control>
+            </div>
+            <div class="form-group col-sm-6">
+                <label for="marque">Marque</label>
+                <nz-form-control [nzValidateStatus]="marque.invalid ? 'error' : 'success'"
+                    nzErrorTip="* Champ obligatoire">
+                    <input id="marque" nz-input placeholder="Marque" [(ngModel)]="vehicule.marque" [required]="true"
+                        name="marque" #marque="ngModel" />
+                </nz-form-control>
+            </div>
+
+            <div class="form-group col-sm-4">
+                <label for="modele">Modele</label>
+                <nz-form-control [nzValidateStatus]="modele.invalid ? 'error' : 'success'"
+                    nzErrorTip="* Champ obligatoire">
+                    <input id="modele" nz-input placeholder="Modele" [(ngModel)]="vehicule.modele" [required]="true"
+                        name="modele" #modele="ngModel" />
+                </nz-form-control>
+            </div>
+
+            <div class="form-group col-sm-4">
+                <label >Categorie</label>
+                <nz-form-control [nzValidateStatus]="categorie.invalid ? 'error' : 'success'"
+                    nzErrorTip="* Champ obligatoire">
+                    <ng-select name="categorie" required nz-input [closeOnSelect]="true"
+                        placeholder="Chosissez la categorie du vehicule" #categorie="ngModel" appendTo="body"
+                        [multiple]="false" [searchable]="true" [(ngModel)]="selectedCategorieVehicule">
+                        <ng-option  *ngFor="let categorie of categorieVehicules" [value]="categorie">
+                            <i [class]="categorie.icon" aria-hidden="true"></i>&nbsp;
+                           {{ categorie.libelle }}
+                        </ng-option>
+                    </ng-select>
+                </nz-form-control>
+            </div>
+
+            <div class="form-group col-sm-4">
+                <label>Choissisez une photo</label>
+               <button type="button" (click)="fileInput.click()" class="btn d-block btn-primary">
+                   <i class="fa fa-upload" aria-hidden="true"></i>
+                   Choisir
+               </button>
+               <input type="file" #fileInput hidden value="" (click)="fileInput.value = null" id="file"
+               (change)="onImageChoosed($event)" name="file" />
+            </div>
+
+            <div class="card shadow" *ngIf="vehiculeImage">
+                <div class="card-body">
+                    <div class="pl-lg-4">
+                        <div class="row">
+                            <div class="col-sm-6 col-xl-6">
+                                <image-cropper [imageChangedEvent]="vehiculeImage" [resizeToWidth]="600"
+                                    [maintainAspectRatio]="true" format="png" (imageCropped)="imageCropped($event)"
+                                    [resizeToHeight]="600" (loadImageFailed)="loadImageFailed()">
+                                </image-cropper>
+                            </div>
+                            <div class="col-sm-6 col-xl-6">
+                                <img style="width: 100%;" [src]="croppedVehiculeImage" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-group col-sm-12 col-lg-12 col-md-12 mt-3 d-flex justify-content-end">
+                <button class="btn btn-primary" [disabled]="vehiculeForm.invalid" (click)="update()">
+                    Modfier
+                    <i class="fa fa-check-circle" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+
+
+    </form>
+</div>

@@ -1,0 +1,44 @@
+<div class="container w-100">
+    <form role="form" #etatForm="ngForm" autocomplete="off">
+        <ngx-spinner type="ball-clip-rotate-pulse" [fullScreen]="false"></ngx-spinner>
+        <div class="row">
+            <div class="form-group col-sm-6">
+                <label for="prenom">Code</label>
+                <nz-form-control [nzValidateStatus]="code.invalid ? 'error' : 'success'"
+                    nzErrorTip="* Champ obligatoire">
+                    <input id="code" nz-input placeholder="Code" [(ngModel)]="etat.code" [required]="true" name="code"
+                        #code="ngModel" />
+                </nz-form-control>
+            </div>
+            <div class="form-group col-sm-6">
+                <label for="prenom">Libelle</label>
+                <nz-form-control [nzValidateStatus]="libelle.invalid ? 'error' : 'success'"
+                    nzErrorTip="* Champ obligatoire">
+                    <input id="libelle" nz-input placeholder="Libelle" [(ngModel)]="etat.libelle" [required]="true"
+                        name="libelle" #libelle="ngModel" />
+                </nz-form-control>
+            </div>
+
+            <div class="form-group col-sm-6">
+                <label class="form-control-label" for="etatSuivant">Etat suivant</label>
+                <nz-form-control [nzValidateStatus]="etatSuivant.invalid ? 'error' : 'success'"
+                    nzErrorTip="* Champ obligatoire">
+                    <ng-select name="etatSuivant" [items]="etats" bindLabel="libelle" [notFoundText]="'aucun élément trouvé.'"
+                        placeholder="Selectionner une formule" #etatSuivant="ngModel" appendTo="body" [multiple]="false"
+                        [searchable]="true" [(ngModel)]="selectedEtatSuivant">
+                    </ng-select>
+                </nz-form-control>
+            </div>
+
+
+            <div class="form-group col-sm-12 col-lg-12 col-md-12 d-flex justify-content-end">
+                <button class="btn btn-primary" [disabled]="etatForm.invalid" (click)="create()">
+                    Valider
+                    <i class="fa fa-check-circle" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+
+
+    </form>
+</div>

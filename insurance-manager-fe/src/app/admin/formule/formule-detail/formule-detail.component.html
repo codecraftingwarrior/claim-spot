@@ -1,0 +1,17 @@
+<nz-descriptions nzTitle="Informations">
+    <nz-descriptions-item nzTitle="Code">
+        {{ formule?.code }}
+    </nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Libelle">
+        {{ formule?.libelle }}
+    </nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Montant">
+        {{ formule?.montant | currency:'F CFA':'code':'3.2-2':'fr' }}
+    </nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Description">
+        {{ formule?.description }}
+    </nz-descriptions-item>
+    <nz-descriptions-item nzTitle="CanPost">
+        {{ formule?.canPost }}
+    </nz-descriptions-item>
+</nz-descriptions>

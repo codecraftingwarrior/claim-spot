@@ -1,0 +1,73 @@
+<div class="container w-100">
+    <form role="form" #formuleForm="ngForm" autocomplete="off">
+        <ngx-spinner type="ball-clip-rotate-pulse" [fullScreen]="false"></ngx-spinner>
+        <div class="row">
+            <div class="form-group col-sm-6">
+                <label for="prenom">Code</label>
+                <nz-form-control [nzValidateStatus]="code.invalid ? 'error' : 'success'"
+                    nzErrorTip="* Champ obligatoire">
+                    <input id="code" nz-input placeholder="Code" [(ngModel)]="formule.code" [required]="true"
+                        name="code" #code="ngModel" />
+                </nz-form-control>
+            </div>
+            <div class="form-group col-sm-6">
+                <label for="prenom">Libelle</label>
+                <nz-form-control [nzValidateStatus]="libelle.invalid ? 'error' : 'success'"
+                    nzErrorTip="* Champ obligatoire">
+                    <input id="libelle" nz-input placeholder="Libelle" [(ngModel)]="formule.libelle" [required]="true"
+                        name="libelle" #libelle="ngModel" />
+                </nz-form-control>
+            </div>
+            <div class="form-group col-sm-6">
+                <label for="prenom">Montant</label>
+                <nz-form-control [nzValidateStatus]="montant.invalid ? 'error' : 'success'"
+                    nzErrorTip="* Champ obligatoire">
+                    <input id="montant" nz-input
+                        [options]="{ prefix: '', suffix: ' F CFA ', thousands: '.', decimal: ',', allowNegative: false }"
+                        currencyMask placeholder="Montant" [(ngModel)]="formule.montant" [required]="true"
+                        name="montant" #montant="ngModel" />
+                </nz-form-control>
+            </div>
+
+            <div class="form-group col-sm-6">
+                <label class="form-control-label" for="option">Options</label>
+                <nz-form-control [nzValidateStatus]="option.invalid ? 'error' : 'success'"
+                    nzErrorTip="* Champ obligatoire">
+                    <ng-select name="option" required [items]="options" bindLabel="libelle" [closeOnSelect]="false"
+                        placeholder="Selectionner une ou plusieurs option" #option="ngModel" appendTo="body"
+                        multiple="true" [searchable]="true" [(ngModel)]="selectedOptions">
+                    </ng-select>
+                </nz-form-control>
+            </div>
+
+            <div class="form-group col-sm-10">
+                <label for="prenom">Description</label>
+                <nz-form-control [nzValidateStatus]="description.invalid ? 'error' : 'success'"
+                    nzErrorTip="* Champ obligatoire">
+                    <ckeditor nz-input [required]="true" name="description" #description="ngModel"
+                        [(ngModel)]="formule.description" [editor]="editor"></ckeditor>
+                </nz-form-control>
+            </div>
+            
+            <div class="form-group col-sm-2">
+                <label for="prenom">Annonce</label>
+                <nz-form-control [nzValidateStatus]="canPost.invalid ? 'error' : 'success'"
+                    nzErrorTip="* Champ obligatoire">
+                    <nz-switch #canPost="ngModel" name="canPost" [(ngModel)]="formule.canPost"></nz-switch><br>
+                    <small class="text-success" *ngIf="formule.canPost">Les bénéficiaires de cette formule auront la
+                        possibilité de poster des annonces.</small>
+                </nz-form-control>
+            </div>
+
+
+            <div class="form-group col-sm-12 col-lg-12 col-md-12 d-flex justify-content-end">
+                <button class="btn btn-primary" [disabled]="formuleForm.invalid" (click)="create()">
+                    Valider
+                    <i class="fa fa-check-circle" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+
+
+    </form>
+</div>

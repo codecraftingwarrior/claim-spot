@@ -1,0 +1,177 @@
+<div class="container-fluid d-flex w-100 h-75 align-items-center justify-content-center">
+    <div class="col-xl-12 col-md-12 mb-2 ">
+        <div class="row mt-2 mb-3">
+            <div class="col-12">
+                <nz-card style="width:100%;">
+                    <div class="d-flex justify-content-between">
+                        <button type="button" class="btn btn-primary" (click)="location.back()">
+                            <i class="fa fa-arrow-left" aria-hidden="true"></i> Retour
+                        </button> &nbsp;
+                        <!--<h4 > Gestion des <span class="font-weigh-bold">role</span> </h4>-->
+                    </div>
+
+                </nz-card>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-xl-12  mb-xl-0">
+                <div class="card shadow mb-2">
+                    <div class="card-header p-4 border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Role</h3>
+                            </div>
+
+                            <div class="col">
+                                <input class="form-control form-control-alternative" (keyup)="updateFilter($event)"
+                                    placeholder="Rechercher" type="text">
+                            </div>
+
+                            <div class="col text-right">
+                                <button type="button" (click)="refresh()"
+                                    [hidden]="!authSrv.hasListAuthority(roleSrv?.resourceName)"
+                                    routerLinkActive="router-link-active" class="btn btn-dark">
+                                    <i class="fas fa-sync"></i>
+                                    Raffraichir
+                                </button>
+                                &nbsp;
+                                <button type="button" (click)="isNewModalVisible = true" [hidden]="!authSrv.hasWriteAuthority(roleSrv?.resourceName)"
+                                    routerLinkActive="router-link-active" class="btn btn-primary">
+                                    <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                                    Ajouter
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row  ">
+            <div class="col-xl-12 mb-xl-0">
+                <div class="card shadow">
+                    <ngx-spinner type="ball-clip-rotate-pulse"
+                        [hidden]="(isEditModalVisible || isNewModalVisible || isPermissionModalVisible || isViewModalVisible)"
+                        [fullScreen]="false"></ngx-spinner>
+                    <ngx-datatable #table *ngIf="roles.length && (roleSrv.resourceName)" class="material expandable"
+                        [columns]="columns" [columnMode]="'force'" [headerHeight]="50" [footerHeight]="50"
+                        rowHeight="auto" [limit]="10" [rows]="roles">
+
+                        <ngx-datatable-column name="Actions">
+
+                            <ng-template let-value="value" let-row="row" ngx-datatable-cell-template>
+
+                                <button type="button" class="btn btn-sm btn-secondary"
+                                [hidden]="!authSrv.hasAnyAuthority(['permission:write', 'role:write'])"
+                                    (click)="displayManagePermissionModal(row)" nzTooltipTitle="Permission"
+                                    nzTooltipPlacement="top" nz-tooltip>
+                                    <i class="fas fa-user-shield" aria-hidden="true"></i>
+                                </button> &nbsp;
+
+                                <button (click)="displayViewModal(row)" type="button" nzTooltipTitle="Details" [hidden]="!authSrv.hasViewAuthority(roleSrv?.resourceName)"
+                                    nzTooltipPlacement="top" nz-tooltip class="btn btn-sm btn-info">
+                                    <i class="fa fa-eye"></i>
+                                </button>&nbsp;
+
+                                <button (click)="displayEditModal(row)" type="button" nzTooltipTitle="Modifier" [hidden]="!authSrv.hasWriteAuthority(roleSrv?.resourceName)"
+                                    nzTooltipPlacement="top" nz-tooltip class="btn btn-sm btn-warning">
+                                    <i class="fas fa-pen-square"></i>
+                                </button>&nbsp;
+
+                                <button type="button" class="btn btn-sm btn-danger" (click)="delete(row)" nzTooltipTitle="Supprimer" [hidden]="!authSrv.hasDeleteAuthority(roleSrv?.resourceName)"
+                                    nzTooltipPlacement="top" nz-tooltip>
+                                    <i class="fa fa-trash"></i>
+                                </button>
+
+                            </ng-template>
+                        </ngx-datatable-column>
+
+                        <ngx-datatable-column name="Code">
+                            <ng-template let-rowIndex="rowIndex" let-row="row" ngx-datatable-cell-template>
+                                {{ row.code }}
+                            </ng-template>
+                        </ngx-datatable-column>
+                        <ngx-datatable-column name="Nom">
+                            <ng-template let-row="row" let-expanded="expanded" ngx-datatable-cell-template>
+                                {{ row.nom }}
+                            </ng-template>
+                        </ngx-datatable-column>
+
+
+                    </ngx-datatable>
+
+                    <app-empty-indicator *ngIf="!roles.length && (roleSrv.resourceName)"
+                        (buttonClicked)="isNewModalVisible = true"></app-empty-indicator>
+                    <app-access-denied-indicator *ngIf="!(roleSrv.resourceName)"></app-access-denied-indicator>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<nz-modal [nzMaskClosable]="false" [(nzVisible)]="isNewModalVisible" [nzClosable]="true" [nzWidth]="'50%'"
+    [nzTitle]="modalTitle" [nzContent]="modalContent" [nzFooter]="null" (nzOnCancel)="isNewModalVisible = false">
+    <ng-template #modalTitle>
+        <span class="font-weight-bold">Formulaire de creation</span>
+    </ng-template>
+
+    <ng-template #modalContent>
+        <app-role-new (created)="onCreated($event)"></app-role-new>
+    </ng-template>
+
+    <ng-template #modalFooter>
+        <button nz-button nzType="primary" (click)="isNewModalVisible = false">Fermer</button>
+    </ng-template>
+</nz-modal>
+
+
+<nz-modal [nzMaskClosable]="false" [(nzVisible)]="isEditModalVisible" [nzClosable]="true" [nzWidth]="'50%'"
+    [nzTitle]="updateModalTitle" [nzContent]="updateModalContent" [nzFooter]="null"
+    (nzOnCancel)="isEditModalVisible = false">
+    <ng-template #updateModalTitle>
+        <span class="font-weight-bold">Formulaire de modification</span>
+    </ng-template>
+
+    <ng-template #updateModalContent>
+        <app-role-edit [role]="selectedRole" (updated)="onUpdated($event)"></app-role-edit>
+    </ng-template>
+
+    <ng-template #modalFooter>
+        <button nz-button nzType="primary" (click)="isEditModalVisible = false">Fermer</button>
+    </ng-template>
+</nz-modal>
+
+<nz-modal [nzMaskClosable]="false" [(nzVisible)]="isPermissionModalVisible" [nzClosable]="true" [nzWidth]="'90%'"
+    [nzTitle]="permissionModalTitle" [nzContent]="permissionModalContent" [nzFooter]="null"
+    (nzOnCancel)="isPermissionModalVisible = false">
+    <ng-template #permissionModalTitle>
+        <span class="font-weight-bold">{{ selectedRole.nom }} - Gestion des permissions</span>
+    </ng-template>
+
+    <ng-template #permissionModalContent>
+        <app-role-manage-permission [role]="selectedRole" (finished)="onManagePermissionFinished()">
+        </app-role-manage-permission>
+    </ng-template>
+
+    <ng-template #modalFooter>
+        <button nz-button nzType="primary" (click)="isPermissionModalVisible = false">Fermer</button>
+    </ng-template>
+</nz-modal>
+
+<nz-modal [nzMaskClosable]="false" [(nzVisible)]="isViewModalVisible" [nzClosable]="true" [nzWidth]="'85%'"
+    [nzTitle]="viewModalTitle" [nzContent]="viewModalContent" [nzFooter]="null"
+    (nzOnCancel)="isViewModalVisible = false">
+    <ng-template #viewModalTitle>
+        <span class="font-weight-bold">{{ selectedRole.nom }} - Details</span>
+    </ng-template>
+
+    <ng-template #viewModalContent>
+        <app-role-detail [role]="selectedRole"></app-role-detail>
+    </ng-template>
+
+    <ng-template #modalFooter>
+        <button nz-button nzType="primary" (click)="isViewModalVisible = false">Fermer</button>
+    </ng-template>
+</nz-modal>

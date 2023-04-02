@@ -1,0 +1,25 @@
+<div class="container w-100">
+    <form role="form" #optionForm="ngForm" autocomplete="off">
+        <ngx-spinner type="ball-clip-rotate-pulse" [fullScreen]="false"></ngx-spinner>
+        <div class="row">
+            <div class="form-group col-sm-12">
+                <label for="prenom">Libelle</label>
+                <nz-form-control [nzValidateStatus]="libelle.invalid ? 'error' : 'success'"
+                    nzErrorTip="* Champ obligatoire">
+                    <input id="libelle" nz-input placeholder="Libelle" [(ngModel)]="option.libelle" [required]="true"
+                        name="libelle" #libelle="ngModel" />
+                </nz-form-control>
+            </div>
+
+
+            <div class="form-group col-sm-12 col-lg-12 col-md-12 d-flex justify-content-end">
+                <button class="btn btn-primary" [disabled]="optionForm.invalid" (click)="update()">
+                    Modifier
+                    <i class="fa fa-check-circle" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+
+
+    </form>
+</div>

@@ -1,0 +1,187 @@
+<div class="container-fluid d-flex w-100 h-75 align-items-center justify-content-center">
+    <div class="col-xl-12 col-md-12 mb-2 ">
+        <div class="row mt-2 mb-3">
+            <div class="col-12">
+                <nz-card style="width:100%;">
+                    <div class="d-flex justify-content-between">
+                        <button type="button" class="btn btn-primary" (click)="location.back()">
+                            <i class="fa fa-arrow-left" aria-hidden="true"></i> Retour
+                        </button> &nbsp;
+                        <!--<h4 > Gestion des <span class="font-weigh-bold">role</span> </h4>-->
+                    </div>
+
+                </nz-card>
+            </div>
+
+        </div>
+        <div class="row">
+            <div class="col-xl-12  mb-xl-0">
+                <div class="card shadow mb-2">
+                    <div class="card-header p-4 border-0">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h3 class="mb-0">Creneaux</h3>
+                            </div>
+
+                            <!--<div class="col">
+                                <input class="form-control form-control-alternative" (keyup)="updateFilter($event)"
+                                    placeholder="Rechercher" type="text">
+                            </div>-->
+
+                            <div class="col text-right">
+                                <button type="button" (click)="refresh()"
+                                    [hidden]="!authSrv.hasListAuthority(creneauSrv.resourceName)"
+                                    routerLinkActive="router-link-active" class="btn btn-dark">
+                                    <i class="fas fa-sync"></i>
+                                    Raffraichir
+                                </button>
+                                &nbsp;
+                                <!--<button type="button" (click)="isNewModalVisible = true"
+                                    [hidden]="!authSrv.hasWriteAuthority(creneauSrv.resourceName)"
+                                    routerLinkActive="router-link-active" class="btn btn-primary">
+                                    <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                                    Ajouter
+                                </button>-->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <ngx-spinner type="ball-clip-rotate-pulse" [fullScreen]="false">
+            </ngx-spinner>
+            <div class="col-sm-12 col-md-5 col-lg-4">
+                <div class="card">
+                    <div class="card-header">
+                        Disponibilité de lavage
+                    </div>
+                    <div class="card-body">
+                        <h4 class="card-title">Choisir une date</h4>
+                        <nz-calendar [nzFullscreen]="false" [(ngModel)]="selectedDate" [(nzMode)]="mode"
+                            (nzSelectChange)="onSelectedDateChange($event)">
+
+                            <ul *nzDateCell="let date" class="events">
+                                <li class="d-flex justify-content-center" *ngIf="hasAtLeastOneDisponibilite(date)">
+                                    <nz-badge [nzStatus]="'processing'"></nz-badge>
+                                </li>
+                            </ul>
+
+                        </nz-calendar>
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-3 col-lg-4">
+                <div class="container">
+                    <form ngNativeValidate>
+                        <div class="card">
+
+                            <div class="card-header">
+                                Ajout disponibilité
+                            </div>
+                            <div class="card-body" [hidden]="!authSrv.hasWriteAuthority(creneauSrv.resourceName)">
+                                <div class="form-group">
+                                    <label for="time" class="col-12 col-form-label">Heure</label>
+                                    <div class="timepicker">
+                                        <input placeholder="Selectionner une heure" nz-input [required]="true"
+                                            name="time" id="time" aria-label="24hr format" [ngxTimepicker]="fullTime"
+                                            [format]="24" readonly>
+                                        <ngx-material-timepicker (timeSet)="createWithTime($event)" #fullTime
+                                            [enableKeyboardInput]="true" [cancelBtnTmpl]="cancelBtn"
+                                            [confirmBtnTmpl]="confirmBtn" [editableHintTmpl]="dialHint">
+                                        </ngx-material-timepicker>
+
+                                        <ng-template #cancelBtn>
+                                            <button type="button" style="margin-right: 10px;"
+                                                class="btn btn-sm btn-light">Annuler</button>
+                                        </ng-template>
+                                        <ng-template #confirmBtn>
+                                            <button type="button" class="btn btn-sm btn-info">Valider</button>
+                                        </ng-template>
+
+                                        <ng-template #dialHint>
+                                            <small>(vous pouvez utiliser les touches du clavier)</small>
+                                        </ng-template>
+
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- <div class="card-footer text-muted">
+                                <div class="form-group row">
+                                    <div class="offset-sm-2 col-sm-10">
+                                        <button [disabled]="!time" type="submit"
+                                            class="btn btn-primary float-right">Ajouter</button>
+                                    </div>
+                                </div>
+                            </div> -->
+                        </div>
+                    </form>
+                    <app-access-denied-indicator *ngIf="!authSrv.hasWriteAuthority(creneauSrv.resourceName)">
+                    </app-access-denied-indicator>
+                </div>
+            </div>
+            <div class="col-sm-12 col-md-4 col-lg-4">
+                <div class="card">
+
+                    <div class="card-header">
+                        Liste des disponibilités du {{ selectedDate|date:'dd MMM, yyyy' }}
+                    </div>
+                    <div class="card-body">
+                        <table class="table"
+                            *ngIf="associatedCreneaux.length && authSrv.hasListAuthority(creneauSrv.resourceName)">
+                            <thead>
+                                <tr>
+                                    <th>Heure</th>
+                                    <th>Etat</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let creneau of associatedCreneaux; let i=index">
+                                    <td>{{ creneau.heure }}</td>
+                                    <td>
+                                        <span *ngIf="!creneau.choosen"
+                                            class="badge badge-success badge-pill">Disponible</span>
+                                        <span *ngIf="creneau.choosen"
+                                            class="badge badge-danger badge-pill">Reservée</span>
+                                    </td>
+                                    <td>
+                                        <button (click)="delete(creneau)"
+                                            *ngIf="!creneau.choosen && authSrv.hasDeleteAuthority(creneauSrv.resourceName)"
+                                            type="button" class="btn btn-sm btn-danger">
+                                            <i class="icofont-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <app-empty-indicator [displayButton]="false"
+                            *ngIf="!associatedCreneaux.length && authSrv.hasListAuthority(creneauSrv.resourceName)"
+                            [isGrantedCreate]="authSrv.hasWriteAuthority(creneauSrv.resourceName)"
+                            (buttonClicked)="isNewModalVisible = true"></app-empty-indicator>
+
+                        <app-access-denied-indicator *ngIf="!authSrv.hasListAuthority(creneauSrv.resourceName)">
+                        </app-access-denied-indicator>
+
+                    </div>
+                    <div class="card-footer text-muted">
+                        <button (click)="showCloneModal()" type="button" class="btn btn-secondary float-right">
+                            Cloner <i class="icofont-retweet"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<nz-modal [(nzVisible)]="isCloneModalVisible" [nzTitle]="title" (nzOnCancel)="isCloneModalVisible = false"
+    (nzOnOk)="clone()">
+    <nz-calendar [nzFullscreen]="false" [(ngModel)]="dateForClone" [(nzMode)]="mode"></nz-calendar>
+
+    <ng-template #title>
+        Selectionner la date cible
+    </ng-template>
+</nz-modal>

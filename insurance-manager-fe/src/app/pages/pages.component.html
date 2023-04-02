@@ -1,0 +1,19 @@
+<app-menu-bar></app-menu-bar>
+<section id="hero" class="d-flex align-items-center" >
+    <div class="container" data-aos="zoom-out" data-aos-delay="100">
+        <h1>Bienvenue chez la <span>CIA</span>
+        </h1>
+        <h2>Compagnie Internationale d'Assurance</h2>
+        <div class="d-flex">
+            <a [routerLink]="['/about']" routerLinkActive="router-link-active"  class="btn-get-started scrollto">En savoir plus</a>
+            <!--
+            <a href="https://www.youtube.com/watch?v=jDDaplaOz7Q" class="venobox btn-watch-video" data-vbtype="video"
+                data-autoplay="true"> Watch Video <i class="icofont-play-alt-2"></i></a>
+            -->
+        </div>
+    </div>
+</section>
+<div id="page" class="main">
+    <router-outlet></router-outlet>
+</div>
+<app-footer></app-footer>

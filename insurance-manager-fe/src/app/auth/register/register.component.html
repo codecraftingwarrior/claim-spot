@@ -1,0 +1,61 @@
+<main class="d-flex align-items-center min-vh-100 py-3 py-md-0">
+    <div class="container">
+        <div class="card login-card">
+            <div class="row no-gutters">
+                <div class="col-md-5" style="width: 100%; ">
+                    <img src="assets/img/auth/register.jpg" alt="login" style="display: block; margin-left: auto; margin-right: auto; width: 100%;" class="img-fluid login-card-img">
+                </div>
+                <div class="col-md-7">
+                    <div class="card-body">
+                        <div class="brand-wrapper">
+                            <h4>CIA.</h4>
+                        </div>
+                        <p class="login-card-description">Inscrivez - vous</p>
+                        <form role="form" #registerForm="ngForm" autocomplete="off">
+                            <div class="form-row">
+                                <div class="form-group col-sm-12 col-md-12 col-lg-12">
+                                    <label for="prenom" class="sr-only">Prenom</label>
+                                    <input type="text" name="prenom" id="prenom" class="form-control"
+                                        placeholder="Prenom">
+                                </div>
+                                <div class="form-group col-sm-12 col-md-12 col-lg-12">
+                                    <label for="nom" class="sr-only">Nom</label>
+                                    <input type="text" name="nom" id="nom" class="form-control"
+                                        placeholder="Nom">
+                                </div>
+                                <div class="form-group col-sm-12 col-md-12 col-lg-12">
+                                    <label for="email" class="sr-only">Email</label>
+                                    <input type="email" name="email" id="email" class="form-control"
+                                        placeholder="Email">
+                                </div>
+                                
+                                <div class="form-group col-sm-12 col-md-12 col-lg-12">
+                                    <label for="password" class="sr-only">Mot de passe</label>
+                                    <input type="password" name="password" id="password" class="form-control"
+                                        placeholder="mot de passe">
+                                </div>
+
+                                <div class="form-group col-sm-12 col-md-12 col-lg-12">
+                                    <label for="passwordConfirm" class="sr-only">Confirmer le mot de passe</label>
+                                    <input type="password" name="passwordConfirm" id="passwordConfirm" class="form-control"
+                                        placeholder="Confirmer le mot de passe">
+                                </div>
+
+                            </div>
+
+                            <input name="login" id="login" class="btn btn-block login-btn mb-4" type="button"
+                                value="Valider">
+                        </form>
+                        <p class="login-card-footer-text">Vous possédez déjà un compte ?
+                            <a [routerLink]="['/auth', 'login']" class="text-reset custom-text-hover">Connectez - vous</a>
+                        </p>
+                        <nav class="login-card-footer-nav custom-text-hover">
+                            <a href="#!"> &copy; Copyright <strong><span>CIA</span></strong>. All Rights Reserved</a>
+                            <!-- <a href="#!">Privacy policy</a> -->
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>

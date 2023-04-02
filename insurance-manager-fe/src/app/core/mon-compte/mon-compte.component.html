@@ -1,0 +1,171 @@
+<h6 class="heading-small text-muted mb-4">Mes informations</h6>
+<div class="pl-lg-4">
+    <form #updateForm="ngForm" role="form" autocomplete="off">
+        <div class="row">
+            <!--<ngx-spinner type="ball-clip-rotate-pulse" [fullScreen]="false">
+            </ngx-spinner>-->
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-control-label" for="input-email">Adresse Electronique</label>
+                    <nz-form-control [nzValidateStatus]="username.invalid ? 'error' : 'success'"
+                        nzErrorTip="* Champ obligatoire">
+                        <input disabled type="email" [(ngModel)]="currentUser.username" nz-input id="input-email"
+                            name="email" required #username="ngModel" placeholder="E-mail">
+                    </nz-form-control>
+
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-control-label" for="input-first-name">Prenom</label>
+                    <nz-form-control [nzValidateStatus]="prenom.invalid ? 'error' : 'success'"
+                        nzErrorTip="* Champ obligatoire">
+                        <input type="text" nz-input #prenom="ngModel" [(ngModel)]="currentUser.prenom"
+                            id="input-first-name" name="prenom" required placeholder="Prenom">
+                    </nz-form-control>
+
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-control-label" for="input-last-name">Nom</label>
+                    <nz-form-control [nzValidateStatus]="nom.invalid ? 'error' : 'success'"
+                        nzErrorTip="* Champ obligatoire">
+                        <input type="text" id="input-last-name" name="nom" required [(ngModel)]="currentUser.nom"
+                            nz-input #nom="ngModel" placeholder="Nom">
+                    </nz-form-control>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-control-label" for="telephone">Téléphone</label>
+                    <nz-form-control [nzValidateStatus]="telephone.invalid ? 'error' : 'success'"
+                        nzErrorTip="* Champ obligatoire">
+                        <input type="tel" prefix="+221" [mask]="'(00) 000 00 00'" nz-input #telephone="ngModel"
+                            id="telephone" name="telephone" required [(ngModel)]="currentUser.telephone"
+                            placeholder="Téléphone">
+                    </nz-form-control>
+
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-control-label" for="fonction">Fonction</label>
+                    <nz-form-control [nzValidateStatus]="fonction.invalid ? 'error' : 'success'"
+                        nzErrorTip="* Champ obligatoire">
+                        <input type="text" id="fonction" name="fonction" required nz-input
+                            [(ngModel)]="currentUser.fonction" #fonction="ngModel" placeholder="Téléphone">
+                    </nz-form-control>
+
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-control-label" for="adresse">Adresse</label>
+                    <nz-form-control [nzValidateStatus]="adresse.invalid ? 'error' : 'success'"
+                        nzErrorTip="* Champ obligatoire">
+                        <input type="tel" id="adresse" name="adresse" required nz-input
+                            [(ngModel)]="currentUser.adresse" #adresse="ngModel" placeholder="Adresse">
+                    </nz-form-control>
+
+                </div>
+            </div>
+
+        </div>
+        <div class="row d-flex justify-content-end">
+            <div class="col-sm-4 d-flex justify-content-end">
+                <button [disabled]="updateForm.invalid" type="button" (click)="updateInfos()" class="btn btn-primary">
+                    Modifier
+                    <i class="fa fa-check-circle" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+    </form>
+
+
+
+</div>
+<hr class="my-4" />
+<!-- Address -->
+<form #passwordForm="ngForm" role="form" autocomplete="off">
+    <!--<ngx-spinner type="ball-clip-rotate-pulse" [fullScreen]="false">
+    </ngx-spinner>-->
+    <h6 class="heading-small text-muted mb-4">Modifier mon mot de passe</h6>
+    <div class="pl-lg-4">
+        <div class="row">
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-control-label" for="currentPassword">Mot de passe
+                        actuel</label>
+                    <nz-form-control [nzValidateStatus]="currentPasswordInput.invalid ? 'error' : 'success'"
+                        nzErrorTip="* Champ obligatoire">
+                        <input [type]="passwordType.currentPassword" nz-input #currentPasswordInput="ngModel"
+                            name="currentPassword" [(ngModel)]="currentPassword" required id="currentPassword"
+                            class="form-control form-control-alternative" placeholder="mot de passe courant">
+                    </nz-form-control>
+
+                    <small>
+                        <a href="javascript:void(0)"
+                            (click)="passwordType.currentPassword = passwordType.currentPassword === 'password' ? 'text' : 'password'">
+                            {{ passwordType.currentPassword === 'password' ? 'Afficher' : 'Masquer' }}
+                        </a>
+                    </small>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-control-label" for="newPassword">Nouveau mot de passe</label>
+                    <nz-form-control [nzValidateStatus]="newPasswordInput.invalid ? 'error' : 'success'"
+                        nzErrorTip="* Champ obligatoire">
+                        <input [type]="passwordType.newPassword" name="newPassword" nz-input #newPasswordInput="ngModel"
+                            [(ngModel)]="newPassword" required id="newPassword"
+                            class="form-control form-control-alternative" placeholder="Nouveau mot de passe">
+                    </nz-form-control>
+
+                    <small>
+                        <a href="javascript:void(0)"
+                            (click)="passwordType.newPassword = passwordType.newPassword === 'password' ? 'text' : 'password'">
+                            {{ passwordType.newPassword === 'password' ? 'Afficher' : 'Masquer' }}
+                        </a>
+                    </small>
+                </div>
+            </div>
+            <div class="col-lg-4">
+                <div class="form-group">
+                    <label class="form-control-label" for="passwordConfirm">Confirmez le mot de
+                        passe</label>
+                    <nz-form-control [nzValidateStatus]="passwordConfirmInput.invalid ? 'error' : 'success'"
+                        nzErrorTip="* Champ obligatoire">
+                        <input [type]="passwordType.confirmPassword" name="passwordConfirm" nz-input
+                            #passwordConfirmInput="ngModel" [(ngModel)]="passwordConfirm" required id="passwordConfirm"
+                            class="form-control form-control-alternative" placeholder="confirmer le mot de passe">
+                    </nz-form-control>
+
+                    <small>
+                        <a href="javascript:void(0)"
+                            (click)="passwordType.confirmPassword = passwordType.confirmPassword === 'password' ? 'text' : 'password'">
+                            {{ passwordType.confirmPassword === 'password' ? 'Afficher' : 'Masquer' }}
+                        </a>
+                    </small>
+                </div>
+            </div>
+        </div>
+        <div class="row d-flex justify-content-end">
+            <div class="col-sm-12 d-flex justify-content-end">
+                <button [disabled]="passwordForm.invalid" type="button" (click)="updatePassword()" class="btn  btn-primary">
+                    Valider
+                    <i class="fa fa-check-circle" aria-hidden="true"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</form>

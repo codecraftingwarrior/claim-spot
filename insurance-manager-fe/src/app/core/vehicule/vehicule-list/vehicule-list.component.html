@@ -1,0 +1,172 @@
+<div class="col-xl-12 col-md-12 mb-2 " style="width: 100%; height: 100%;">
+    <div class="row">
+        <div class="col-xl-12  mb-xl-0">
+            <div class="card shadow mb-2">
+                <div class="card-header p-4 border-0">
+                    <div class="row align-items-center">
+
+                        <div class="col">
+                            <input class="form-control form-control-alternative" (keyup)="updateFilter($event)"
+                                placeholder="Rechercher" type="text">
+                        </div>
+
+                        <div class="col text-right">
+                            <button type="button" (click)="refresh()"
+                                [hidden]="!authSrv.hasListAuthority(vehiculeSrv.resourceName)"
+                                routerLinkActive="router-link-active" class="btn btn-dark">
+                                <i class="fas fa-sync"></i>
+                                Raffraichir
+                            </button>
+                            &nbsp;
+                            <button type="button" (click)="isNewModalVisible = true"
+                                [hidden]="!authSrv.hasWriteAuthority(vehiculeSrv.resourceName)"
+                                routerLinkActive="router-link-active" class="btn btn-primary">
+                                <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                                Ajouter
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row ">
+        <div class="col-xl-12 mb-xl-0">
+            <div class="row" style="width: 100%; height: 100%;"
+                *ngIf="vehicules.length && (authSrv.hasListAuthority(vehiculeSrv.resourceName))">
+
+                <div class="col-lg-3 col-md-6 mb-4 mb-lg-0" *ngFor="let vehicule of vehicules">
+                    <!-- Card-->
+                    <div class="card shadow-sm border-1 rounded">
+                        <div class="card-body p-0"><img [src]="vehicule?.image" alt="" class="w-100 card-img-top">
+                            <div class="p-4">
+                                <h5 class="mb-0">{{ vehicule.marque + ' ' + vehicule.modele }}</h5>
+                                <p class="small text-muted" style="font-size: 15px;">
+                                    <i class="{{vehicule?.categorie?.icon}}"></i>
+                                    {{vehicule?.categorie?.libelle}}
+                                </p>
+                                <p *ngIf="vehicule?.annonce">
+                                    <nz-tag [nzColor]="'#0069D9'">
+                                        En {{ vehicule?.annonce?.type }}
+                                    </nz-tag>
+                                    <nz-tag [nzColor]="'#0069D9'">
+                                        {{ vehicule?.annonce?.prix  | currency:'F CFA':'code':'3.2-2':'fr' }}
+                                        {{ vehicule?.annonce?.type === 'Location' ? '/ Jour' : '' }}
+                                    </nz-tag>
+                                </p>
+                                <ul class="social mb-0 list-inline mt-3">
+                                    <li class="list-inline-item m-0">
+                                        <a class="social-link text-warning" (click)="displayEditModal(vehicule)"
+                                            [hidden]="!authSrv.hasWriteAuthority(vehiculeSrv.resourceName)"
+                                            type="button" nzTooltipTitle="Modifier" nzTooltipPlacement="top" nz-tooltip>
+                                            <i class="fa fa-pencil" aria-hidden="true"></i>
+                                        </a>
+                                    </li>&nbsp;
+                                    <li class="list-inline-item m-0">
+                                        <a class="social-link text-info" (click)="displayViewModal(vehicule)"
+                                            [hidden]="!authSrv.hasViewAuthority(vehiculeSrv.resourceName)" type="button"
+                                            nzTooltipTitle="Details" nzTooltipPlacement="top" nz-tooltip>
+                                            <i class="fa fa-eye"></i>
+                                        </a>
+                                    </li>&nbsp;
+                                    <li class="list-inline-item m-0">
+                                        <a class="social-link text-danger" (click)="delete(vehicule)"
+                                            [hidden]="!authSrv.hasDeleteAuthority(vehiculeSrv.resourceName)"
+                                            nzTooltipTitle="Supprimer" nzTooltipPlacement="top" nz-tooltip>
+                                            <i class="fa fa-trash"></i>
+                                        </a>
+                                    </li>&nbsp;
+                                    <li class="list-inline-item m-0" [hidden]="vehicule?.annonce || !authSrv?.fetchCurrentUser()?.formule?.canPost">
+                                        <a class="social-link text-primary" (click)="displayNewAnnonceModal(vehicule)"
+                                            nzTooltipTitle="Annonce" nzTooltipPlacement="top" nz-tooltip>
+                                            <i class="fa fa-share" aria-hidden="true"></i>
+                                        </a>
+                                    </li>
+                                    <li class="list-inline-item m-0" [hidden]="!vehicule?.annonce">
+                                        <a class="social-link text-primary" (click)="deleteAnnonce(vehicule)"
+                                            nzTooltipTitle="Supprimer l'annonce" nzTooltipPlacement="top" nz-tooltip>
+                                            <i class="fa fa-times" aria-hidden="true"></i>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+            </div>
+
+            <app-empty-indicator *ngIf="!vehicules.length && authSrv.hasListAuthority(vehiculeSrv.resourceName)"
+                [isGrantedCreate]="authSrv.hasWriteAuthority(vehiculeSrv.resourceName)"
+                (buttonClicked)="isNewModalVisible = true"></app-empty-indicator>
+            <app-access-denied-indicator *ngIf="!authSrv.hasListAuthority(vehiculeSrv.resourceName)">
+            </app-access-denied-indicator>
+        </div>
+    </div>
+</div>
+
+<nz-modal [nzMaskClosable]="false" [(nzVisible)]="isNewModalVisible" [nzClosable]="true" [nzWidth]="'70%'"
+    [nzTitle]="newModalTitle" [nzContent]="newModalContent" [nzFooter]="null" (nzOnCancel)="isNewModalVisible = false">
+    <ng-template #newModalTitle>
+        <span class="font-weight-bold">Formulaire de creation</span>
+    </ng-template>
+
+    <ng-template #newModalContent>
+        <app-vehicule-new (created)="onCreated($event)"></app-vehicule-new>
+    </ng-template>
+
+    <ng-template #newModalFooter>
+        <button nz-button nzType="primary" (click)="isNewModalVisible = false">Fermer</button>
+    </ng-template>
+</nz-modal>
+
+
+<nz-modal [nzMaskClosable]="false" [(nzVisible)]="isEditModalVisible" [nzClosable]="true" [nzWidth]="'70%'"
+    [nzTitle]="updateModalTitle" [nzContent]="updateModalContent" [nzFooter]="null"
+    (nzOnCancel)="isEditModalVisible = false">
+    <ng-template #updateModalTitle>
+        <span class="font-weight-bold">Formulaire de modification</span>
+    </ng-template>
+
+    <ng-template #updateModalContent>
+        <app-vehicule-edit [vehicule]="selectedVehicule" (updated)="onUpdated($event)"></app-vehicule-edit>
+    </ng-template>
+
+    <ng-template #modalFooter>
+        <button nz-button nzType="primary" (click)="isEditModalVisible = false">Fermer</button>
+    </ng-template>
+</nz-modal>
+
+
+<nz-modal [nzMaskClosable]="false" [(nzVisible)]="isViewModalVisible" [nzClosable]="true" [nzWidth]="'60%'"
+    [nzTitle]="viewModalTitle" [nzContent]="viewModalContent" [nzFooter]="null"
+    (nzOnCancel)="isViewModalVisible = false">
+    <ng-template #viewModalTitle>
+        <span class="font-weight-bold">{{ selectedVehicule?.marque + ' ' + selectedVehicule?.modele }} - Details</span>
+    </ng-template>
+
+    <ng-template #viewModalContent>
+        <app-vehicule-detail [vehicule]="selectedVehicule"></app-vehicule-detail>
+    </ng-template>
+
+    <ng-template #modalFooter>
+        <button nz-button nzType="primary" (click)="isViewModalVisible = false">Fermer</button>
+    </ng-template>
+</nz-modal>
+
+<nz-modal [nzMaskClosable]="false" [(nzVisible)]="isAnnonceNewModalVisible" [nzClosable]="true" [nzWidth]="'70%'"
+    [nzTitle]="newAnnonceModalTitle" [nzContent]="newAnnonceModalContent" [nzFooter]="null"
+    (nzOnCancel)="isAnnonceNewModalVisible = false">
+    <ng-template #newAnnonceModalTitle>
+        <span class="font-weight-bold">Annonce</span>
+    </ng-template>
+
+    <ng-template #newAnnonceModalContent>
+        <app-annonce-new [vehicule]="selectedVehicule" (created)="onAnnonceCreated($event)"></app-annonce-new>
+    </ng-template>
+
+    <ng-template #newAnnonceModalFooter>
+        <button nz-button nzType="primary" (click)="isAnnonceNewModalVisible = false">Fermer</button>
+    </ng-template>
+</nz-modal>

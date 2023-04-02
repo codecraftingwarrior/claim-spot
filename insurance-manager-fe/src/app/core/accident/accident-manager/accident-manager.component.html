@@ -1,0 +1,366 @@
+<div class="col-xl-12 col-md-12 mb-2 ">
+
+    <div class="row">
+        <div class="col-xl-12  mb-xl-0">
+            <div class="card shadow mb-2">
+                <div class="card-header p-4 border-0">
+                    <div class="row align-items-center">
+
+
+                        <div class="col{{authSrv.hasRole('ROLE_RESP') ? '-3' : ''}}">
+                            <input class="form-control form-control-alternative" (keyup)="updateFilter($event)"
+                                placeholder="Rechercher" type="text">
+                        </div>
+
+                        <div class="col-7" *ngIf="authSrv.hasRole('ROLE_RESP')">
+                            <nz-radio-group [(ngModel)]="selectedState" nzButtonStyle="solid"
+                                (ngModelChange)="nzContextMenuService.close(true);findByEtat()">
+                                <label *ngFor="let state of etats" nz-radio-button [nzValue]="state">
+                                    {{state.libelle}} 
+                                </label>
+                            </nz-radio-group>
+                        </div>
+
+                        <div class="col{{authSrv.hasRole('ROLE_RESP') ? '-2' : ''}} text-right">
+                            <button type="button"
+                                (click)="authSrv.hasRole('ROLE_RESP') ? findByEtat() : findAwaitingExpertise()"
+                                [hidden]="!authSrv.hasListAuthority(accidentSrv.resourceName)"
+                                routerLinkActive="router-link-active" class="btn btn-dark">
+                                <i class="fas fa-sync"></i>
+                                Raffraichir
+                            </button>
+                            &nbsp;
+                            <!--<button type="button" (click)="isNewModalVisible = true"
+                                [hidden]="!authSrv.hasWriteAuthority(accidentSrv.resourceName)"
+                                routerLinkActive="router-link-active" class="btn btn-primary">
+                                <i class="fa fa-plus-circle" aria-hidden="true"></i>
+                                Ajouter
+                            </button>-->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="row  ">
+        <div class="col-xl-12 mb-xl-0">
+            <div class="card shadow">
+                <nz-collapse *ngIf="accidents.length && (authSrv.hasListAuthority(accidentSrv.resourceName))">
+
+                    <nz-collapse-panel (contextmenu)="contextMenu($event, menu)" *ngFor="let accident of accidents"
+                        [nzHeader]="header" [nzExtra]="extraTpl">
+
+                        <nz-dropdown-menu #menu="nzDropdownMenu">
+                            <ul nz-menu>
+                                <li nz-menu-item
+                                    *ngIf="accident?.etat?.code === attenteValidationCode && authSrv.hasWriteAuthority(accidentSrv.resourceName)"
+                                    (click)="validate(accident)">
+                                    <i class="fa fa-check-square text-primary" style="font-size: 18px;"></i>&nbsp;
+                                    Valider le dossier
+                                </li>
+                                <li nz-menu-item
+                                    *ngIf="accident?.etat?.code === attenteValidationCode && authSrv.hasRole('ROLE_RESP')"
+                                    (click)="displayNotifyModal(accident)">
+                                    <i class="fas fa-envelope-open text-primary" style="font-size: 18px;"></i>&nbsp;
+                                    Notifier l'assuré
+                                </li>
+                                <li nz-menu-item (click)="displayPhotoNewModal(accident)"
+                                    *ngIf="accident?.etat?.code === attentePhotoCode && accident?.rendezVous && authSrv.hasRole('ROLE_RESP')">
+                                    <i class="fas fa-camera text-primary" *ngIf="accident?.rendezVous"
+                                        style="font-size: 18px;"></i>&nbsp;
+                                    Ajouter les photo
+                                </li>
+
+                                <li nz-menu-item (click)="displayImageManagerModal(accident)"
+                                    *ngIf="accident?.etat?.code === attentePhotoCode && accident?.photos?.length && authSrv.hasRole('ROLE_RESP')">
+                                    <i class="fas fa-images text-primary" style="font-size: 18px;"></i>&nbsp;
+                                    Gérer les photos
+                                </li>
+                                <li nz-menu-item (click)="displayRendezVousNewModal(accident)"
+                                    *ngIf="accident?.etat?.code === attentePhotoCode && !accident?.rendezVous && authSrv.hasRole('ROLE_RESP') ">
+                                    <i class="fas fa-calendar-check text-primary" *ngIf="!accident?.rendezVous"
+                                        style="font-size: 18px;"></i>&nbsp;
+                                    Fixer un rendez-vous
+                                </li>
+
+                                <li nz-menu-item (click)="$event.stopPropagation();displayCarDetailModal(accident)">
+                                    <i class="fa fa-car text-primary" style="font-size: 18px;"
+                                        aria-hidden="true"></i>&nbsp;
+                                    Details du vehicule
+                                </li>
+
+                                <li nz-menu-item
+                                    *ngIf="accident?.photos.length && accident?.etat?.code === attentePhotoCode && authSrv.hasRole('ROLE_RESP')"
+                                    (click)="$event.stopPropagation();switchToAwaitingExpertiseState(accident)">
+                                    <i class="fab fa-searchengin text-primary" style="font-size: 18px;"></i>&nbsp;
+                                    Mettre en attente d'expertise
+                                </li>
+
+                                <li nz-menu-item
+                                    *ngIf="accident?.photos.length && accident?.etat?.code === attenteExpertiseCode && authSrv.hasRole('ROLE_EXP')"
+                                    (click)="$event.stopPropagation();displayDeclartionImage(accident)">
+                                    <i class="fas fa-camera text-primary" style="font-size: 18px;"></i>&nbsp;
+                                    Voir les photos
+                                </li>
+
+                                <li nz-menu-item
+                                    *ngIf="accident?.photos.length && accident?.etat?.code === attenteExpertiseCode && authSrv.hasRole('ROLE_EXP')"
+                                    (click)="$event.stopPropagation();displayEvaluationModal(accident)">
+                                    <i class="fas fa-file-signature text-primary" style="font-size: 18px;"></i>&nbsp;
+                                    {{ !accident?.montantRemboursement ? 'Faire l\'evaluation' : 'Modifier les montants'  }}
+                                </li>
+
+                                <li nz-menu-item
+                                    *ngIf="accident?.montantRemboursement && accident?.etat?.code === attenteExpertiseCode && authSrv.hasRole('ROLE_RESP')"
+                                    (click)="$event.stopPropagation();displayEvaluationModal(accident)">
+                                    <i class="fas fa-file-signature text-primary" style="font-size: 18px;"></i>&nbsp;
+                                    Consulter les montant
+                                </li>
+
+                                <li nz-menu-item
+                                    *ngIf="accident?.montantRemboursement && accident?.etat?.code === attenteExpertiseCode && authSrv.hasRole('ROLE_RESP')"
+                                    (click)="$event.stopPropagation();fenceAndNotify(accident)">
+                                    <i class="fas ffa fa-paper-plane text-primary" style="font-size: 18px;"></i>&nbsp;
+                                    Notifier et clôturer
+                                </li>
+
+                            </ul>
+                        </nz-dropdown-menu>
+
+                        <app-accident-detail [accident]="accident"></app-accident-detail>
+
+                        <ng-template #extraTpl>
+                            <nz-badge nzStatus="processing" *ngIf="accident.montantRemboursement && accident?.etat?.code === attenteExpertiseCode"
+                                (click)="$event.stopPropagation()">
+                            </nz-badge> &nbsp;
+                            <!--<span *ngIf="accident?.etat?.code === attenteValidationCode">
+                                <i class="fa fa-check-square text-primary" style="font-size: 18px;"
+                                    (click)="$event.stopPropagation();validate(accident)" nzTooltipTitle="Valider"
+                                    nzTooltipPlacement="top" nz-tooltip></i>&nbsp;
+
+                                <i class="fa fa-envelope-square text-primary" style="font-size: 18px;"
+                                    (click)="$event.stopPropagation();displayNotifyModal(accident)"
+                                    [hidden]="!authSrv?.hasWriteAuthority(accidentSrv.resourceName)"
+                                    nzTooltipTitle="Notifier" nzTooltipPlacement="top" nz-tooltip></i>&nbsp;
+                            </span>
+
+                            <span *ngIf="accident?.etat?.code === attentePhotoCode">
+                                <i class="fas fa-camera text-primary" *ngIf="accident?.rendezVous"
+                                    style="font-size: 18px;"
+                                    (click)="$event.stopPropagation(); displayPhotoNewModal(accident)"
+                                    [hidden]="!authSrv?.hasWriteAuthority(accidentSrv.resourceName)"
+                                    nzTooltipTitle="Ajouter photo" nzTooltipPlacement="top" nz-tooltip></i>
+
+                                <i class="fas fa-calendar-check text-primary" *ngIf="!accident?.rendezVous"
+                                    style="font-size: 18px;"
+                                    (click)="$event.stopPropagation();displayRendezVousNewModal(accident)"
+                                    [hidden]="!authSrv?.hasWriteAuthority(accidentSrv.resourceName)"
+                                    nzTooltipTitle="Fixer rendez-vous" nzTooltipPlacement="top" nz-tooltip></i>
+
+                            </span>-->
+
+                        </ng-template>
+
+                        <ng-template #header>
+                            <i class="fas fa-car-crash"></i> &nbsp;
+                            Dossier &nbsp; <nz-tag [nzColor]="'blue'"><span
+                                    class="font-weight-bold">{{accident?.code}}</span>
+                            </nz-tag> - &nbsp;
+                            {{ accident?.applicationUser?.prenom + ' ' + accident?.applicationUser?.nom }}
+                            <!--<a href="javascript:void(0)"
+                                (click)="$event.stopPropagation();displayCarDetailModal(accident)">
+                                <i class="fa fa-car" aria-hidden="true"></i>
+                            </a>-->
+                        </ng-template>
+                    </nz-collapse-panel>
+
+                </nz-collapse>
+
+
+                <app-empty-indicator *ngIf="!accidents?.length && authSrv.hasListAuthority(accidentSrv?.resourceName)"
+                    [isGrantedCreate]="authSrv?.hasWriteAuthority(accidentSrv.resourceName)" [displayButton]="false"
+                    (buttonClicked)="isNewModalVisible = true"></app-empty-indicator>
+                <app-access-denied-indicator *ngIf="!authSrv.hasListAuthority(accidentSrv?.resourceName)">
+                </app-access-denied-indicator>
+
+            </div>
+        </div>
+    </div>
+</div>
+
+<nz-modal [nzMaskClosable]="false" [(nzVisible)]="isCarDetailModalVisible" [nzClosable]="true" [nzWidth]="'60%'"
+    [nzTitle]="modalTitle" [nzContent]="modalContent" [nzFooter]="null" (nzOnCancel)="isCarDetailModalVisible = false">
+    <ng-template #modalTitle>
+        <span
+            class="font-weight-bold">{{ selectedAccident?.vehicule?.marque + ' ' +  selectedAccident?.vehicule?.modele }}
+            - Details</span>
+    </ng-template>
+
+    <ng-template #modalContent>
+        <app-vehicule-detail [vehicule]="selectedAccident?.vehicule"></app-vehicule-detail>
+    </ng-template>
+
+    <ng-template #modalFooter>
+        <button nz-button nzType="primary" (click)="isCarDetailModalVisible = false">Fermer</button>
+    </ng-template>
+</nz-modal>
+
+<nz-modal [nzMaskClosable]="false" [(nzVisible)]="isMailModalVisible" [nzClosable]="true" [nzWidth]="'60%'"
+    [nzTitle]="mailModalTitle" [nzContent]="mailModalContent" [nzFooter]="null"
+    (nzOnCancel)="isMailModalVisible = false">
+    <ng-template #mailModalTitle>
+        <span class="font-weight-bold">Notifier
+            {{ selectedAccident?.applicationUser?.prenom + ' ' +  selectedAccident?.applicationUser?.nom }}
+        </span>
+    </ng-template>
+
+    <ng-template #mailModalContent>
+        <form role="form" autocomplete="off" #mailForm="ngForm">
+            <div class="row">
+                <ngx-spinner type="ball-clip-rotate-pulse" [fullScreen]="false">
+                </ngx-spinner>
+                <div class="form-group col-sm-12">
+                    <label for="objet">Objet</label>
+                    <nz-form-control [nzValidateStatus]="objet.invalid ? 'error' : 'success'"
+                        nzErrorTip="* Champ obligatoire">
+                        <input id="objet" nz-input placeholder="objet" [(ngModel)]="mail.object" [required]="true"
+                            name="objet" #objet="ngModel" />
+                    </nz-form-control>
+                </div>
+
+                <div class="form-group col-sm-12">
+                    <label for="contenu">Contenu</label>
+                    <nz-form-control [nzValidateStatus]="content.invalid ? 'error' : 'success'"
+                        nzErrorTip="* Champ obligatoire">
+                        <ckeditor nz-input [required]="true" name="contenu" #content="ngModel"
+                            [(ngModel)]="mail.content" [editor]="editor"></ckeditor>
+                    </nz-form-control>
+                </div>
+
+                <div class="form-group col-sm-12 col-lg-12 col-md-12 d-flex justify-content-end">
+                    <button class="btn btn-primary" [disabled]="mailForm.invalid" (click)="notify()">
+                        Notifier
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+
+            </div>
+        </form>
+
+    </ng-template>
+
+    <ng-template #modalFooter>
+        <button nz-button nzType="primary" (click)="isMailModalVisible = false">Fermer</button>
+    </ng-template>
+</nz-modal>
+
+<nz-modal [nzMaskClosable]="false" [(nzVisible)]="isRvModalVisible" [nzClosable]="true" [nzWidth]="'70%'"
+    [nzTitle]="rendezVousModalTitle" [nzContent]="rendezVousModalContent" [nzFooter]="null"
+    (nzOnCancel)="isRvModalVisible = false">
+    <ng-template #rendezVousModalTitle>
+        <span class="font-weight-bold"> Fixer un rendez-vous pour
+            {{ selectedAccident?.applicationUser?.prenom + ' ' + selectedAccident?.applicationUser?.nom }} </span>
+    </ng-template>
+
+    <ng-template #rendezVousModalContent>
+        <app-rendez-vou-new (created)="onCreatedRendezVous()" [accident]="selectedAccident"></app-rendez-vou-new>
+    </ng-template>
+
+    <ng-template #modalFooter>
+        <button nz-button nzType="primary" (click)="isCarDetailModalVisible = false">Fermer</button>
+    </ng-template>
+</nz-modal>
+
+<nz-modal [nzMaskClosable]="false" [(nzVisible)]="isPhotoNewModalVisible" [nzClosable]="true" [nzWidth]="'70%'"
+    [nzTitle]="photoModalTitle" [nzContent]="photoModalContent" [nzFooter]="null"
+    (nzOnCancel)="isPhotoNewModalVisible = false">
+    <ng-template #photoModalTitle>
+        <span class="font-weight-bold"> Chargements des images </span>
+    </ng-template>
+
+    <ng-template #photoModalContent>
+        <app-photo-new (created)="onCreatedPhoto($event)" [accident]="selectedAccident"></app-photo-new>
+    </ng-template>
+
+    <ng-template #modalFooter>
+        <button nz-button nzType="primary" (click)="isPhotoNewModalVisible = false">Fermer</button>
+    </ng-template>
+</nz-modal>
+
+<nz-modal [nzMaskClosable]="false" [(nzVisible)]="isImgManagerModalVisible" [nzClosable]="true" [nzWidth]="'50%'"
+    [nzTitle]="photoManageModalTitle" [nzContent]="photoManageModalContent" [nzFooter]="null"
+    (nzOnCancel)="isImgManagerModalVisible = false">
+    <ng-template #photoManageModalTitle>
+        <span class="font-weight-bold"> Gérer les images </span>
+    </ng-template>
+
+    <ng-template #photoManageModalContent>
+        <app-photo-list [accident]="selectedAccident"></app-photo-list>
+    </ng-template>
+
+    <ng-template #modalFooter>
+        <button nz-button nzType="primary" (click)="isImgManagerModalVisible = false">Fermer</button>
+    </ng-template>
+</nz-modal>
+
+<nz-modal [nzMaskClosable]="false" [(nzVisible)]="isEvaluationModalVisible" [nzClosable]="true" [nzWidth]="'50%'"
+    [nzTitle]="evaluationModalTitle" [nzContent]="evaluationModalContent" [nzFooter]="null"
+    (nzOnCancel)="isEvaluationModalVisible = false">
+    <ng-template #evaluationModalTitle>
+        <span class="font-weight-bold"> Evaluation Global </span>
+    </ng-template>
+
+    <ng-template #evaluationModalContent>
+        <div class="container-fluid w-100">
+            <form role="form" #evaluationForm="ngForm" autocomplete="off">
+                <ngx-spinner type="ball-clip-rotate-pulse" [fullScreen]="false"></ngx-spinner>
+                <div class="row">
+
+                    <div class="form-group col-sm-6">
+                        <label for="prenom">Montant Remboursement</label>
+                        <nz-form-control [nzValidateStatus]="montantRemboursement.invalid ? 'error' : 'success'"
+                            nzErrorTip="* Champ obligatoire">
+                            <input id="montantRemboursement" nz-input [disabled]="authSrv.hasRole('ROLE_RESP')"
+                                [options]="{ prefix: '', suffix: ' F CFA ', thousands: '.', decimal: ',', allowNegative: false }"
+                                currencyMask placeholder="Montant de remboursement"
+                                [(ngModel)]="selectedAccident.montantRemboursement" [required]="true"
+                                name="montantRemboursement" #montantRemboursement="ngModel" />
+                        </nz-form-control>
+                    </div>
+
+                    <div class="form-group col-sm-6">
+                        <label for="prenom">Montant Reparation</label>
+                        <nz-form-control [nzValidateStatus]="montantReparation.invalid ? 'error' : 'success'"
+                            nzErrorTip="* Champ obligatoire">
+                            <input id="montantReparation" nz-input [disabled]="authSrv.hasRole('ROLE_RESP')"
+                                [options]="{ prefix: '', suffix: ' F CFA ', thousands: '.', decimal: ',', allowNegative: false }"
+                                currencyMask placeholder="Montant de reparation"
+                                [(ngModel)]="selectedAccident.motantReparartion" [required]="true"
+                                name="montantReparation" #montantReparation="ngModel" />
+                        </nz-form-control>
+                    </div>
+
+
+                    <div class="form-group col-sm-12 col-lg-12 col-md-12 d-flex justify-content-end">
+                        <button class="btn btn-primary" [hidden]="authSrv.hasRole('ROLE_RESP')"
+                            [disabled]="evaluationForm.invalid" (click)="evaluate()">
+                            Valider
+                            <i class="fa fa-check-circle" aria-hidden="true"></i>
+                        </button>
+                        <button class="btn btn-primary" [hidden]="authSrv.hasRole('ROLE_EXP')"
+                            [disabled]="evaluationForm.invalid" (click)="fenceAndNotify()">
+                            Notifier et clôturer
+                            <i class="fa fa-paper-plane" aria-hidden="true"></i>
+                        </button>
+                    </div>
+                </div>
+
+
+            </form>
+        </div>
+    </ng-template>
+
+    <ng-template #modalFooter>
+        <button nz-button nzType="primary" (click)="isEvaluationModalVisible = false">Fermer</button>
+    </ng-template>
+</nz-modal>

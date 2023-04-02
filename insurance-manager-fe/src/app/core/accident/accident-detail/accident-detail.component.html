@@ -1,0 +1,88 @@
+<nz-descriptions nzTitle="Accident">
+
+    <nz-descriptions-item nzTitle="Survenu le">
+        <span class="font-weight-bold">
+            {{ accident?.date | date:'dd/MM/yyyy' }}
+        </span>
+    </nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Heure">
+        <time>{{ accident?.heure }}</time>
+    </nz-descriptions-item>
+
+    <nz-descriptions-item nzTitle="Lieu">
+        {{ accident?.lieu }}
+    </nz-descriptions-item>
+
+    <nz-descriptions-item *ngIf="accident?.motantReparartion" nzTitle="Montant Réparation">
+        <span class="font-weight-bold"> {{accident?.motantReparartion | currency:'F CFA':'code':'3.2-2':'fr'}} </span>
+    </nz-descriptions-item>
+
+    <nz-descriptions-item *ngIf="accident?.montantRemboursement" nzTitle="Montant Remboursement">
+        <span class="font-weight-bold"> {{accident?.montantRemboursement | currency:'F CFA':'code':'3.2-2':'fr'}}
+        </span>
+    </nz-descriptions-item>
+    <nz-descriptions-item *ngIf="accident?.montantRemboursement">
+        <span> </span>
+    </nz-descriptions-item>
+
+    <nz-descriptions-item nzTitle="Details">
+        <span [innerHTML]="accident?.details"></span>
+    </nz-descriptions-item>
+</nz-descriptions>
+
+<nz-descriptions nzTitle="Adversaire">
+    <nz-descriptions-item nzTitle="Prenom">
+        <nz-tag [nzColor]="'blue'">
+            <span *ngIf="accident?.detailAdversaire?.prenom">
+                {{accident?.detailAdversaire?.prenom}}
+            </span>
+            <span *ngIf="!accident?.detailAdversaire?.prenom">
+                INCONNU
+            </span>
+        </nz-tag>
+
+    </nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Nom">
+        <nz-tag [nzColor]="'blue'">
+            <span *ngIf="accident?.detailAdversaire?.nom">
+                {{accident?.detailAdversaire?.nom}}
+            </span>
+            <span *ngIf="!accident?.detailAdversaire?.nom">
+                INCONNU
+            </span>
+        </nz-tag>
+
+    </nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Genre">
+        <nz-tag [nzColor]="'blue'">
+            <span style="font-size: 15px;">
+                <i class="fa fa-male" *ngIf="accident?.detailAdversaire?.genre?.toLowerCase() === 'homme'"
+                    aria-hidden="true"></i>
+                <i class="fa fa-female" *ngIf="accident?.detailAdversaire?.genre?.toLowerCase() === 'femme'"
+                    aria-hidden="true"></i>
+                &nbsp;{{accident?.detailAdversaire?.genre}}
+            </span>
+        </nz-tag>
+    </nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Vehicule">
+        <i [class]="accident?.detailAdversaire?.categorieVehicule?.icon"></i> &nbsp;
+        {{ accident?.detailAdversaire?.marqueVehicule + ' ' +accident?.detailAdversaire?.modeleVehicule }}
+    </nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Immatriculation">
+        <span *ngIf="accident?.detailAdversaire?.immatriculation">
+            {{accident?.detailAdversaire?.immatriculation}}
+        </span>
+
+        <nz-tag [nzColor]="'blue'" *ngIf="!accident?.detailAdversaire?.immatriculation">
+            <span>
+                INCONNU
+            </span>
+        </nz-tag>
+
+
+    </nz-descriptions-item>
+    <nz-descriptions-item style="opacity: 0;"></nz-descriptions-item>
+    <nz-descriptions-item nzTitle="Description">
+        <span [innerHTML]="accident?.detailAdversaire?.description"></span>
+    </nz-descriptions-item>
+</nz-descriptions>

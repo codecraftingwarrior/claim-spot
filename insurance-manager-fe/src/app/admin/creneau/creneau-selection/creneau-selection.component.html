@@ -1,0 +1,62 @@
+<div class="row pt-3 pb-3">
+
+    <div class="col-12 col-md-6">
+        <div class="card">
+            <div class="card-body">
+                <h4 class="card-title">Selectionner une date</h4>
+                <div [ngStyle]="{border: '1px solid #d9d9d9', borderRadius: '4px'}">
+                    <nz-calendar [(ngModel)]="date" [nzFullscreen]="false" (nzSelectChange)="onDateChange($event)">
+
+                        <ul *nzDateCell="let date" class="events">
+                            <li class="d-flex justify-content-center"
+                                *ngIf="hasAtLeastOneDisponibilite(date) && date >= currentDate">
+                                <nz-badge [nzStatus]="'processing'"></nz-badge>
+                            </li>
+                        </ul>
+
+
+                    </nz-calendar>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 ">
+        <div class="card">
+            <div class="card-body" *ngIf="associatedCreneaux.length">
+                <h4 class="card-title">Sélectionner l'heure</h4>
+                <div class="row">
+                    <ng-container *ngFor="let creneau of associatedCreneaux">
+                        <div class="col-sm-12 col-md-6 mt-1 mb-1" *ngIf="!creneau.choosen"
+                            (click)="selectCreneau(creneau)">
+                            <div class="card"
+                                [ngClass]="{'bg-secondary': selectedCreneau==null || selectedCreneau?.id!=creneau.id, 'bg-primary': selectedCreneau?.id==creneau.id}">
+                                <div class="card-body">
+                                    <h4 class="card-title text-white">{{creneau.heure}}</h4>
+                                    <div class="card-text text-white">
+                                        <div class="row">
+                                            <div [ngClass]="{'col-12': selectedCreneau?.id!=creneau.id, 'col-8': selectedCreneau?.id==creneau.id}"
+                                                class="col-8">
+                                                {{creneau.date|date:'dd/MM/yyyy'}}
+                                            </div>
+                                            <div class="col-4" *ngIf="selectedCreneau?.id==creneau.id">
+                                                <i class="fa fa-check" aria-hidden="true"></i>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ng-container>
+                </div>
+            </div>
+
+            <div class="card-body" *ngIf="associatedCreneaux.length === 0 || allTaken()">
+                <nz-result nzStatus="info" nzTitle="Aucun créneau libre n'est définie pour cette date.">
+                    <div nz-result-extra>
+                        <button nz-button [routerLink]="['/admin', 'creneau']" nzType="primary">Creez-en ici</button>
+                    </div>
+                </nz-result>
+            </div>
+        </div>
+    </div>
+</div>

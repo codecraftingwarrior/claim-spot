@@ -1,0 +1,215 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-xl-4 order-xl-2 mb-5 mb-xl-0">
+            <div class="card card-profile shadow">
+                <div class="row justify-content-center">
+                    <div class="col-lg-3 order-lg-2">
+                        <div class="card-profile-image" (click)="displayImageProfile()">
+                            <a href="javascript:void(0)" >
+                                <img [src]="currentUser?.imageFilepath?.length ? currentUser?.imageFilepath : 'assets/img/defaults/54-512.png'"
+                                  style="vertical-align: middle; width: 100px;height: 100px;border-radius: 50%; object-fit: cover;">
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-header text-center border-0 pt-8 pt-md-4 pb-0 pb-md-4">
+                    <div class="d-flex justify-content-between">
+                        <input type="file" #fileInput hidden value="" (click)="fileInput.value = null" id="file"
+                            (change)="onImageChoosed($event)" name="file" />
+                        <a href="javascript:void(0)" (click)="fileInput.click()"
+                            class="btn btn-sm btn-info mr-4">Changer <i class="fa fa-upload"></i> </a>
+                        <a href="javascript:void(0)" (click)="displayImageProfile()"
+                            class="btn btn-sm btn-dark float-right">Afficher <i class="fa fa-eye"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="text-center">
+                        <h3>
+                            {{currentUser.prenom + ' ' + currentUser.nom}}
+                        </h3>
+                        <div class="h6 mt-0" *ngIf="currentUser?.formule">
+                            <i class="fas fa-file-contract"></i> {{currentUser?.formule?.libelle}}
+                        </div>
+
+                        <div class="h6 mt-0">
+                            <i class="fas fa-briefcase"></i> {{currentUser?.fonction}} <br>
+                        </div>
+
+                        <div class="h6 font-weight-300">
+                            <i class="fas fa-map-marked-alt"></i> {{currentUser?.adresse}}
+                        </div>
+
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-xl-8 order-xl-1" style="width: 100%; height: 100%;">
+            <div class="card shadow" style="width: 100%; height: 100%;">
+                <ngx-spinner type="ball-clip-rotate-pulse" [hidden]="modal?.openModals?.length>0" [fullScreen]="false">
+                </ngx-spinner>
+                <div class="card-header bg-light border-0">
+                    <div class="row align-items-center">
+                        <div class="col-8">
+                            <h3 class="mb-0">
+                                <span *ngIf="authSrv.hasRole('ROLE_AS')">Espace personnel</span>
+                                <span *ngIf="authSrv.hasAnyRole(['ROLE_RESP', 'ROLE_EXP'])">Espace de travail</span>
+                            </h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body" style="width: 100%; height: 100%;">
+                    <nz-tabset>
+                        <nz-tab [nzTitle]="monCompteTitle">
+                            <ng-template #monCompteTitle>
+                                <i class="fas fa-user-cog"></i>
+                                Mon compte
+                            </ng-template>
+                            <app-mon-compte [currentUser]="currentUser"></app-mon-compte>
+                        </nz-tab>
+
+                        <nz-tab [nzTitle]="vehiculeTitle" *ngIf="authSrv.hasRole('ROLE_AS')"
+                            (nzSelect)="vehiculeList.findAll()">
+                            <ng-template #vehiculeTitle>
+                                <i class='bx bxs-car-mechanic'></i>
+                                Mes vehicules
+                            </ng-template>
+                            <app-vehicule-list #vehiculeList></app-vehicule-list>
+                        </nz-tab>
+
+                        <nz-tab [nzTitle]="demandeTitle" *ngIf="authSrv.hasRole('ROLE_AS')"
+                            (nzSelect)="accidentList.findAll()">
+                            <ng-template #demandeTitle>
+                                <i class="fas fa-clipboard-list"></i>
+                                Mes déclarations
+                            </ng-template>
+                            <app-accident-list #accidentList></app-accident-list>
+                        </nz-tab>
+
+                        <nz-tab [nzTitle]="dossierTitle" *ngIf="authSrv.hasAnyRole(['ROLE_RESP', 'ROLE_EXP'])"
+                            (nzSelect)=" authSrv.hasRole('ROLE_RESP') ?  accidentManager.findEtats() : accidentManager.findAwaitingExpertise()">
+                            <ng-template #dossierTitle>
+                                <i class="fas fa-car-crash"></i>
+                                Dossiers
+                            </ng-template>
+                            <app-accident-manager #accidentManager></app-accident-manager>
+                        </nz-tab>
+
+                    </nz-tabset>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<nz-modal [nzMaskClosable]="false" [(nzVisible)]="isVisibleImageModal" [nzClosable]="true" [nzWidth]="'70%'"
+    [nzTitle]="imageModalTitle" [nzContent]="imageModalContent" [nzFooter]="imageModalFooter"
+    (nzOnCancel)="isVisibleImageModal = false">
+    <form #form="ngForm" role="form" novalidate autocomplete="off">
+
+        <ng-template #imageModalTitle>
+            <span class="font-weight-bold">
+                <i class="fa fa-camera"></i>
+                Redimensionnez votre photo
+            </span>
+        </ng-template>
+
+        <ng-template #imageModalContent>
+            <div class="card shadow">
+                <ngx-spinner type="ball-clip-rotate-pulse" [fullScreen]="false"></ngx-spinner>
+                <div class="card-header bg-light border-0">
+                    <div class="row align-items-center">
+                        <div class="col-8">
+                            <h3 class="mb-0">Redimensionnement</h3>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+
+                    <div class="pl-lg-4">
+                        <div class="row">
+                            <div class="col-sm-6 col-xl-6">
+                                <image-cropper [imageChangedEvent]="userImage" 
+                                    [maintainAspectRatio]="true" format="png" (imageCropped)="imageCropped($event)"
+                                     (loadImageFailed)="loadImageFailed()">
+                                </image-cropper>
+                            </div>
+                            <div class="col-sm-6 col-xl-6">
+                                <img style="width: 100%;" [src]="croppedUserImage" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </ng-template>
+
+        <ng-template #imageModalFooter>
+            <div class="row d-flex align-items-ends justify-content-end">
+                <div class="col-12 text-right">
+                    <button (click)="closeImageModal()" [disabled]="form.invalid" type="button" class="btn btn-danger">
+                        Fermer
+                        <i class="fa fa-times-circle" aria-hidden="true"></i>
+                    </button>
+                    <button (click)="updateProfileImage()" type="button" class="btn btn-info">
+                        Valider
+                        <i class="fa fa-check-circle" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+        </ng-template>
+    </form>
+</nz-modal>
+<nz-modal [nzMaskClosable]="false" [(nzVisible)]="isDisplayImageModalVisible" [nzClosable]="true" [nzWidth]="'70%'"
+    [nzTitle]="displayImageTitle" [nzContent]="displayImageContent" [nzFooter]="displayImageFooter"
+    (nzOnCancel)="isDisplayImageModalVisible = false">
+    <form #form="ngForm" role="form" novalidate autocomplete="off">
+
+        <ng-template #displayImageTitle>
+            <span class="font-weight-bold">
+                <i class="fa fa-camera"></i>
+                Ma photo
+            </span>
+        </ng-template>
+
+        <ng-template #displayImageContent>
+            <div class="card shadow" *ngIf="currentUser.imageFilepath.length">
+                <ngx-spinner type="ball-clip-rotate-pulse" [fullScreen]="false">
+                </ngx-spinner>
+                <div class="card-body">
+
+                    <div class="pl-lg-4">
+                        <div class="row d-flex justify-content-center">
+                            <div class="col-sm-12 col-xl-12">
+                                <img style="width: 100%; height: 100%;" [src]="currentUser.imageFilepath" />
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="card-body" *ngIf="!currentUser.imageFilepath.length">
+                <nz-result nzStatus="info" nzTitle="Vous n'avez définie aucune image.">
+                    <div nz-result-extra>
+                        <button nz-button (click)="isDisplayImageModalVisible = false" nzType="primary">Fermer</button>
+                    </div>
+                </nz-result>
+            </div>
+
+        </ng-template>
+
+        <ng-template #displayImageFooter>
+            <div class="row d-flex align-items-ends justify-content-end">
+                <div class="col-12 text-right">
+                    <button (click)="isDisplayImageModalVisible = false" [disabled]="form.invalid" type="button"
+                        class="btn btn-danger">
+                        Fermer
+                        <i class="fa fa-times-circle" aria-hidden="true"></i>
+                    </button>
+                </div>
+            </div>
+        </ng-template>
+    </form>
+</nz-modal>
